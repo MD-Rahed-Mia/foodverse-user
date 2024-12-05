@@ -67,6 +67,7 @@ const CheckoutPage = () => {
   const [deliveryCharge, setDeliveryCharge] = useState(25); // Delivery charge
   const [showBkashModal, setShowBkashModal] = useState(false); // Modal for Bkash
   const [isProcessing, setIsProcessing] = useState(false); // Processing state
+  const [selectedNumber, setSelectedNumber] = useState(null);
 
   const [totalAmount, setTotalAmount] = useState(passedSubtotal); // মোট এমাউন্ট
 
@@ -160,6 +161,7 @@ const CheckoutPage = () => {
         customerMessage: instructions,
         discount,
         addonTotal,
+        customerPhone: selectedNumber,
       };
 
 
@@ -208,7 +210,9 @@ const CheckoutPage = () => {
   // send order when status is changing
   useEffect(() => {
     if (paymentStatus === "success") {
-      placeOrder();
+      toast.success("place order successful.");
+      setCart([]);
+      navigate("/");
     } else if (paymentStatus === "cancel") {
       toast.error(paymentStatus);
     } else if (paymentStatus === "failure") {
@@ -227,7 +231,7 @@ const CheckoutPage = () => {
         return;
       }
       const orderData = {
-        tip,
+        tip: tip,
         paymentMethod,
         totalAmount: cartTotal + tip + deliveryCharge,
         restaurantId: cart[0].restaurantId,
@@ -235,10 +239,11 @@ const CheckoutPage = () => {
         items: [...cart],
         deliveryAmount: deliveryCharge,
         dropLocation: selectedAddress,
-        restaurantLocation: "unknown location",
+        restaurantLocation: null,
         customerMessage: instructions,
         discount,
         addonTotal,
+        customerPhone: selectedNumber,
       };
 
       //   console.log("alert method: ");
@@ -309,6 +314,7 @@ const CheckoutPage = () => {
           <AddressCarousel
             addressList={addressList}
             setSelectedAddress={setSelectedAddress}
+            setSelectedNumber={setSelectedNumber}
           />
         )}
 

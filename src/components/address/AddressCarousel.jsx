@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-export default function AddressCarousel({ addressList, setSelectedAddress }) {
+export default function AddressCarousel({
+  addressList,
+  setSelectedAddress,
+  setSelectedNumber,
+}) {
   // State to track the selected address key
   const [selectedKey, setSelectedKey] = useState(null);
 
@@ -32,6 +36,7 @@ export default function AddressCarousel({ addressList, setSelectedAddress }) {
               onClick={() => {
                 setSelectedAddress(value.address);
                 setSelectedKey(key); // Set the selected key
+                setSelectedNumber(value.phoneNumber);
               }}
             >
               <div>
