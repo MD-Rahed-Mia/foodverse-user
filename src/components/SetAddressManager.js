@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LoadScript, GoogleMap} from "@react-google-maps/api";
+import { LoadScript, GoogleMap } from "@react-google-maps/api";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 
 // Utility to calculate distance between two lat/lng points
 function calculateDistance(lat1, lng1, lat2, lng2) {
@@ -21,13 +21,12 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
   return R * c; // Distance in meters
 }
 
-
 function SetAddressManager() {
   const [coordinates, setCoordinates] = useState({
     lat: 22.865322,
     lng: 91.097044,
   });
-  
+
   const [newAddress, setNewAddress] = useState({
     label: "home",
     latitude: 22.865322,
@@ -48,12 +47,15 @@ function SetAddressManager() {
     addCenterMarker();
   };
 
+  // toast flag
+  const [isToastShow, setIsToastShow] = useState(false);
+
   const handleMapIdle = () => {
     if (mapRef.current) {
       const center = mapRef.current.getCenter();
       const updatedCoordinates = {
         lat: parseFloat(center.lat().toFixed(6)),
-      lng: parseFloat(center.lng().toFixed(6)),
+        lng: parseFloat(center.lng().toFixed(6)),
       };
 
       // Update both coordinates state and newAddress
@@ -63,40 +65,42 @@ function SetAddressManager() {
         latitude: updatedCoordinates.lat,
         longitude: updatedCoordinates.lng,
       }));
-       // Validate delivery zone
-    const distance = calculateDistance(
-      updatedCoordinates.lat,
-      updatedCoordinates.lng,
-      22.8653, // Zone center latitude
-      91.0970 // Zone center longitude
-    );
+      // Validate delivery zone
+      const distance = calculateDistance(
+        updatedCoordinates.lat,
+        updatedCoordinates.lng,
+        22.8653, // Zone center latitude
+        91.097 // Zone center longitude
+      );
 
-    if (distance > 5500) {
-      
-      // Optional: Disable the submit button
-      setNewAddress((prev) => ({
-        ...prev,
-        label: "out_of_zone", // Custom label for feedback
-      }));
-    } else {
-      setNewAddress((prev) => ({
-        ...prev,
-        label: "within_zone", // Reset label if within zone
-      }));
-    }
+      if (distance > 5500) {
+        if (!isToastShow) {
+          // Optional: Disable the submit button
+          toast.error("out of zone. currently our service is not available.");
+          setIsToastShow(true);
+        }
+        setNewAddress((prev) => ({
+          ...prev,
+          label: "out_of_zone", // Custom label for feedback
+        }));
+      } else {
+        setNewAddress((prev) => ({
+          ...prev,
+          
+        }));
+      }
     }
   };
 
   const addCenterMarker = () => {
     const mapContainer = document.getElementById("map");
-      if (!mapContainer) {
-       console.error("Map container not found!");
-       return;
-     }
+    if (!mapContainer) {
+      console.error("Map container not found!");
+      return;
+    }
 
     const centerMarker = document.createElement("div");
-    centerMarker.style.background =
-      'url("/img/Location.png") no-repeat center';
+    centerMarker.style.background = 'url("/img/Location.png") no-repeat center';
     centerMarker.style.backgroundSize = "contain";
     centerMarker.style.height = "80px";
     centerMarker.style.width = "80px";
@@ -129,113 +133,126 @@ function SetAddressManager() {
     }
   };
 
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setNewAddress((prev) => ({ ...prev, [name]: value }));
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const updateUserAddress = async () => {
-      try {
-        console.log("Sending data to backend:", newAddress); // Add this line
-        const userId = JSON.parse(localStorage.getItem("user"))?.id;
-        const response = await axios.put(
-          `${process.env.REACT_APP_API_URL}/user/update-address?id=${userId}`,
-          newAddress,
-          {
-            headers: {
-              "x-auth-token": process.env.REACT_APP_API_TOKEN,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.data.success) {
-          alert("Address updated successfully!");
-        } else {
-          alert("Failed to update address.");
+  const updateUserAddress = async () => {
+    try {
+      console.log("Sending data to backend:", newAddress); // Add this line
+      const userId = JSON.parse(localStorage.getItem("user"))?.id;
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/user/update-address?id=${userId}`,
+        newAddress,
+        {
+          headers: {
+            "x-auth-token": process.env.REACT_APP_API_TOKEN,
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        console.error("Error updating address:", error);
+      );
+      if (response.data.success) {
+        alert("Address updated successfully!");
+      } else {
+        alert("Failed to update address.");
       }
-    };
+    } catch (error) {
+      console.error("Error updating address:", error);
+    }
+  };
 
   useEffect(() => {
     // Ensure to initialize the map when component mounts
     window.onload = addCenterMarker;
-  }, []);  
+  }, []);
 
   return (
     <div className="max-w-lg mx-auto bg-white p-4 rounded-lg shadow-lg ">
       <form
-       onSubmit={(e) => {
-        e.preventDefault();
-        updateUserAddress();
-      }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          updateUserAddress();
+        }}
       >
-        <h1 className="font-bold text-blue-600 text-xl text-center mb-4">Set Your Address</h1>
-      <div className="flex space-x-4 mb-4 justify-center">
-      <button
-        type="button"
-        className={`px-4 py-2 rounded-md ${
-        newAddress.label === "home" ? "bg-blue-400 text-white" : "bg-gray-200"
-        }`}
-        onClick={() => setNewAddress((prev) => ({ ...prev, label: "home" }))}
-      >
-        Home
-      </button>
-      <button
-        type="button"
-        className={`px-4 py-2 rounded-md ${
-        newAddress.label === "office" ? "bg-blue-400 text-white" : "bg-gray-200"
-        }`}
-        onClick={() => setNewAddress((prev) => ({ ...prev, label: "office" }))}
-    
-      >
-        Office
-      </button>
-      <button
-        type="button"
-        className={`px-4 py-2 rounded-md ${
-        newAddress.label === "others" ? "bg-blue-400 text-white" : "bg-gray-200"
-        }`}
-        onClick={() => setNewAddress((prev) => ({ ...prev, label: "others" }))}
-      >
-        Others
-      </button>
-      </div>
-      
-      <label className="block text-sm mb-2">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={newAddress.name}
-           onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded-md mb-4"
-            placeholder="Enter your name"
-            required
-          />
+        <h1 className="font-bold text-blue-600 text-xl text-center mb-4">
+          Set Your Address
+        </h1>
+        <div className="flex space-x-4 mb-4 justify-center">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "home"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() =>
+              setNewAddress((prev) => ({ ...prev, label: "home" }))
+            }
+          >
+            Home
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "office"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() =>
+              setNewAddress((prev) => ({ ...prev, label: "office" }))
+            }
+          >
+            Office
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "others"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() =>
+              setNewAddress((prev) => ({ ...prev, label: "others" }))
+            }
+          >
+            Others
+          </button>
+        </div>
 
-          <label className="block text-sm mb-2">Phone</label>
-          <input
-            type="text"
-            name="phoneNumber"
-            value={newAddress.phoneNumber}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded-md mb-4"
-            placeholder="Enter your phone number"
-            required
-          />
+        <label className="block text-sm mb-2">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={newAddress.name}
+          onChange={handleInputChange}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+          placeholder="Enter your name"
+          required
+        />
 
-          <label className="block text-sm mb-2">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={newAddress.address}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded-md mb-4"
-            placeholder="Enter address details"
-            required
-          />
-      
+        <label className="block text-sm mb-2">Phone</label>
+        <input
+          type="text"
+          name="phoneNumber"
+          value={newAddress.phoneNumber}
+          onChange={handleInputChange}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+          placeholder="Enter your phone number"
+          required
+        />
+
+        <label className="block text-sm mb-2">Address</label>
+        <input
+          type="text"
+          name="address"
+          value={newAddress.address}
+          onChange={handleInputChange}
+          className="w-full border px-4 py-2 rounded-md mb-4"
+          placeholder="Enter address details"
+          required
+        />
+
         <div className="container mx-auto p-4">
           <button
             id="find-location"
@@ -258,31 +275,26 @@ function SetAddressManager() {
                 fullscreenControl: false,
                 streetViewControl: false,
               }}
-            >
-            </GoogleMap>  
+            ></GoogleMap>
           </LoadScript>
 
           <div className="bg-white rounded-lg shadow-lg p-4 text-center flex items-center justify-between">
-            <p>
-              Lat: {newAddress.latitude.toFixed(6)}
-            </p>
-            <p>
-              Long: {newAddress.longitude.toFixed(6)}
-            </p>
+            <p>Lat: {newAddress.latitude.toFixed(6)}</p>
+            <p>Long: {newAddress.longitude.toFixed(6)}</p>
           </div>
         </div>
         <button
           type="submit"
           disabled={newAddress.label === "out_of_zone"}
           className={`${
-          newAddress.label === "out_of_zone"
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-blue-600"
+            newAddress.label === "out_of_zone"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600"
           } text-white text-lg font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
         >
-         {newAddress.label === "out_of_zone"
-         ? "Service Not Available"
-         : "Submit"}
+          {newAddress.label === "out_of_zone"
+            ? "Service Not Available"
+            : "Submit"}
         </button>
       </form>
     </div>

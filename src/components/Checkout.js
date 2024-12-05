@@ -16,7 +16,6 @@ import AddressCarousel from "./address/AddressCarousel";
 const CheckoutPage = () => {
   const location = useLocation();
 
-
   //payment status
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -69,8 +68,7 @@ const CheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false); // Processing state
   const [selectedNumber, setSelectedNumber] = useState(null);
 
-  const [totalAmount, setTotalAmount] = useState(passedSubtotal); // মোট এমাউন্ট
-
+  const [totalAmount, setTotalAmount] = useState(0); // মোট এমাউন্ট
 
   const [placeOrderConfirmation, setPlaceOrderConfirmation] = useState(false);
 
@@ -96,7 +94,6 @@ const CheckoutPage = () => {
   //   setTotalAmount(passedSubtotal); // Ensure totalAmount is updated with passedSubtotal initially
   // }, [passedSubtotal]);
 
-
   const handlePlaceOrder = async () => {
     if (selectedAddress === undefined || selectedAddress === "") {
       toast.error("please select delivery location");
@@ -106,12 +103,12 @@ const CheckoutPage = () => {
     if (paymentMethod === "Bkash") {
       try {
         setIsProcessing(true); // Show processing state
-  
+
         // Prepare data for bKash payment
         const bkashData = {
           amount: totalAmount + tip + deliveryCharge, // Total amount including tip and delivery
         };
-  
+
         // Call backend API to get bKash payment link
         const bkashResponse = await axios.post(
           `${api_path_url}/bkash-payment`,
@@ -123,7 +120,7 @@ const CheckoutPage = () => {
             },
           }
         );
-  
+
         if (bkashResponse.data.success) {
           // Redirect to the bKash payment URL
           const bkashLink = bkashResponse.data.bkashURL; // Backend should return this
@@ -137,7 +134,6 @@ const CheckoutPage = () => {
       } finally {
         setIsProcessing(false); // Stop processing state
       }
-
     } else {
       placeOrder(); // Place order directly for other methods
     }
@@ -164,7 +160,6 @@ const CheckoutPage = () => {
         customerPhone: selectedNumber,
       };
 
-
       const response = await axios.post(
         `${api_path_url}/order/create`,
         { data: orderData },
@@ -175,7 +170,6 @@ const CheckoutPage = () => {
           },
         }
       );
-
 
       if (response.data.success) {
         navigate("/");
@@ -274,17 +268,14 @@ const CheckoutPage = () => {
       setShowBkashModal(false);
     }
   };
-  
-// ফাংশন: টিপ পরিবর্তন করা
+
+  // ফাংশন: টিপ পরিবর্তন করা
   const handleTipChange = (amount) => {
     setTip(amount);
   };
   useEffect(() => {
     console.log(selectedAddress);
   }, [selectedAddress]);
-
-    }
-  };
 
   return (
     <div className="relative">
@@ -413,7 +404,6 @@ const CheckoutPage = () => {
         </button>
       </section>
 
-
       {/* place order confirmation */}
       {placeOrderConfirmation && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50">
@@ -471,7 +461,6 @@ const CheckoutPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
