@@ -18,7 +18,7 @@ export default function MenuCard({ detail }) {
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
   useEffect(() => {
-    setPrice(quantity * detail?.offerPrice + addonValue);
+    setPrice((prev) => quantity * detail?.offerPrice);
   }, [quantity, addonValue]);
 
   const { handleAddToCart } = useCartContext();
@@ -197,40 +197,6 @@ const MenuAddons = ({
   addonValue,
   setAddonValue,
 }) => {
-  function handleOnchange(
-    e,
-    item,
-    addonQuantity,
-    setAddonQuantity,
-    setIsChecked
-  ) {
-    console.log(e.target.checked);
-
-    // Only add the addon if quantity > 0
-    if (e.target.checked) {
-      setAddonList((prev) => [
-        ...prev,
-        {
-          ...item,
-          quantity: addonQuantity,
-          price: item.price * addonQuantity,
-        },
-      ]);
-      setAddonValue((prev) => prev + item.price * addonQuantity);
-      setIsChecked(true);
-    } else {
-      const itemId = item._id.toString();
-      const filterItem = addonList.filter((item) => item._id !== itemId);
-      setAddonValue((prev) => prev - item.price);
-      setAddonList(filterItem);
-      setIsChecked(false);
-    }
-  }
-
-  // useEffect(() => {
-  //   console.log(addonValue);
-  // }, [addonValue]);
-
   return (
     <>
       <h1>Addons</h1>
@@ -241,10 +207,11 @@ const MenuAddons = ({
               return (
                 <AddonItem
                   key={index}
-                  handleOnchange={handleOnchange}
                   item={item}
                   setAddonList={setAddonList}
                   addonList={addonList}
+                  addonValue={addonValue}
+                  setAddonValue={setAddonValue}
                 />
               );
             }
@@ -255,11 +222,33 @@ const MenuAddons = ({
   );
 };
 
-const AddonItem = ({ handleOnchange, item, setAddonList, addonList }) => {
-  const [addonQuantity, setAddonQuantity] = useState(1);
+const AddonItem = ({
+  item,
+  setAddonList,
+  addonList,
+  addonValue,
+  setAddonValue,
+}) => {
+  function handleOnchange(e, item) {
+    console.log(e.target.checked);
 
-  const [isChecked, setIsChecked] = useState(false);
-  const [addonItemValue, setAddonItemValue] = useState(item.price);
+    if (e.target.checked) {
+      // If the item is selected, add it to the addonList
+      setAddonList((prev) => [...prev, { ...item, quantity: 1 }]);
+      setAddonValue((prev) => prev + item.price);
+    } else {
+      // If the item is deselected, remove it from the addonList
+      const filterAddon = addonList.filter(
+        (it) => it._id.toString() === item._id.toString()
+      );
+
+      // Update the addonList without the deselected item
+      setAddonList(filterAddon);
+
+      // Update the addonValue by subtracting the item's price
+      setAddonValue((prev) => prev - item.price);
+    }
+  }
 
   return (
     <div className="flex items-center justify-between border py-4  px-3">
@@ -269,15 +258,7 @@ const AddonItem = ({ handleOnchange, item, setAddonList, addonList }) => {
             type="checkbox"
             name="selectedAddon"
             id="selectedAddons"
-            onChange={(e) =>
-              handleOnchange(
-                e,
-                item,
-                addonQuantity,
-                setAddonQuantity,
-                setIsChecked
-              )
-            }
+            onChange={(e) => handleOnchange(e, item)}
           />
         </div>
         <span className="text-sm">{item.title}</span>
@@ -286,46 +267,8 @@ const AddonItem = ({ handleOnchange, item, setAddonList, addonList }) => {
         <span>
           <TbCurrencyTaka />
         </span>{" "}
-        <span>{addonItemValue}</span>
+        <span>{item.price}</span>
       </div>
-
-      {/* {isChecked ? (
-        <>
-          <h1 className="flex items-center justify-center gap-3">
-            <span
-              className="font-bold  text-yellow-400 cursor-pointer"
-              onClick={() => {
-                if (addonQuantity === 1) {
-                  return false;
-                } else {
-                  setAddonQuantity((prev) => prev - 1);
-                  setAddonItemValue((prev) => prev - item.price);
-                }
-              }}
-            >
-              <FiMinus />
-            </span>
-
-            <span className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-sm">
-              {addonQuantity}
-            </span>
-
-            <span
-              className="font-bold  text-yellow-400 cursor-pointer"
-              onClick={() => {
-                setAddonQuantity((prev) => prev + 1);
-                setAddonItemValue((prev) => prev + item.price);
-
-                setAddonList((prev) => {
-                  return 
-                });
-              }}
-            >
-              <HiPlus />
-            </span>
-          </h1>
-        </>
-      ) : null} */}
     </div>
   );
 };

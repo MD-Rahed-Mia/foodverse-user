@@ -16,6 +16,9 @@ import AddressCarousel from "./address/AddressCarousel";
 const CheckoutPage = () => {
   const location = useLocation();
 
+  // socket io
+  const socket = useSocket();
+
   //payment status
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -77,7 +80,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
 
   // socket
-  const socket = useSocket();
+  // const socket = useSocket();
 
   // user data
   // console.log(user);
@@ -172,14 +175,19 @@ const CheckoutPage = () => {
       );
 
       if (response.data.success) {
+        
+        if (socket && socket.connected) { 
+          socket.emit("sendOrderToRestaurant", response.data.result);
+        } else {
+          console.warn("Socket is not connected. Order notification not sent.");
+        }
+
         navigate("/");
         toast.success("Order placed successfully!");
         localStorage.setItem("cartRest", "");
         setCart([]);
         //  socket.emit("sendOrderToRider", response.data.order);
-
-        //
-        socket.emit("sendOrderToRestaurant", response.data.order);
+        // socket.emit("sendOrderToRestaurant", response.data);
       } else {
         toast.error("Failed to place order.");
       }
@@ -217,6 +225,7 @@ const CheckoutPage = () => {
   const handleBkashPayment = async () => {
     // Simulating Bkash API call with provided credentials
     setIsProcessing(true);
+
     try {
       const id = Cookies.get("id");
 
@@ -226,7 +235,7 @@ const CheckoutPage = () => {
       }
       const orderData = {
         tip: tip,
-        paymentMethod,
+        paymentMethod: "Bkash",
         totalAmount: cartTotal + tip + deliveryCharge,
         restaurantId: cart[0].restaurantId,
         userId: id,

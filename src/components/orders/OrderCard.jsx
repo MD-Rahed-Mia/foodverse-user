@@ -4,19 +4,19 @@ import React, { useEffect, useState } from "react";
 export default function OrderCard({ detail }) {
   const [addons, setAddons] = useState([]);
 
- // console.log(detail);
+  // console.log(detail);
 
   useEffect(() => {
     // Gather all addons from the items
     let allAddons = [];
-  
+
     // Iterate through items to get addons
     detail?.items.forEach((item) => {
       if (item.addons && item.addons.length > 0) {
         allAddons = [...allAddons, ...item.addons]; // Spread and add all addons
       }
     });
-  
+
     setAddons(allAddons); // Set the state with all collected addons
   }, [detail]);
 
@@ -25,7 +25,7 @@ export default function OrderCard({ detail }) {
   }, [addons]);
 
   return (
-    <div className="min-w-[300px] min-h-[300px] relative shadow-md border rounded-md p-4">
+    <div className="w-[90%] mx-auto  bg-white min-h-[300px] relative shadow-md border rounded-md p-4">
       {/* alert icon */}
       <div className="absolute top-2 right-4 cursor-pointer text-orange-400">
         <IoMdAlert />
@@ -34,7 +34,7 @@ export default function OrderCard({ detail }) {
         O.ID- <span className="text-sm ">{detail._id}</span>
       </h1>
       <h1 className="text-gray-500 font-bold">
-        Status- <span>{detail.status}</span>
+        Status- <span className="px-4 py-1 bg-blue-500 text-white rounded-full text-sm">{detail.status}</span>
       </h1>
       <h1 className="text-gray-500 font-bold">
         Payment method- <span>{detail.peymentMethod} </span>
@@ -102,50 +102,54 @@ export default function OrderCard({ detail }) {
           </tbody>
         </table>
 
-        <h1>Addons</h1>
-        <table className="w-full border">
-          <thead>
-            <td className="w-full p-1 text-sm text-center border font-semibold">
-              SL No
-            </td>
-            <td className="w-full p-1 text-sm text-center border font-semibold">
-              title
-            </td>
-            <td className="w-full p-1 text-sm text-center border font-semibold">
-              quantity
-            </td>
-            <td className="w-full p-1 text-sm text-center border font-semibold">
-              Price
-            </td>{" "}
-            <td className="w-full p-1 text-sm text-center border font-semibold">
-              Sub total
-            </td>
-          </thead>
+        {addons?.length > 0 ? (
+          <>
+            <h1 className="text-lg font-extrabold mt-3">Addons</h1>
+            <table className="w-full border">
+              <thead>
+                <td className="w-full text-sm text-center border font-semibold">
+                  SL No
+                </td>
+                <td className="w-full text-sm text-center border font-semibold">
+                  title
+                </td>
+                <td className="w-full text-sm text-center border font-semibold">
+                  quantity
+                </td>
+                <td className="w-full text-sm text-center border font-semibold">
+                  Price
+                </td>{" "}
+                <td className="w-full text-sm text-center border font-semibold">
+                  Sub total
+                </td>
+              </thead>
 
-          <tbody>
-            {addons?.map((item, index) => {
-              return (
-                <tr>
-                  <td className="w-full p-1 text-sm text-center border font-semibold">
-                    {index + 1}
-                  </td>
-                  <td className="w-full p-1 text-sm text-center border font-semibold">
-                    {item.title}
-                  </td>
-                  <td className="w-full p-1 text-sm text-center border font-semibold">
-                    {item.quantity || 1}
-                  </td>
-                  <td className="w-full p-1 text-sm text-center border font-semibold">
-                    {item.price}
-                  </td>
-                  <td className="w-full p-1 text-sm text-center border font-semibold">
-                    {item.price * (item.quantity || 1)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              <tbody>
+                {addons?.map((item, index) => {
+                  return (
+                    <tr>
+                      <td className="w-full text-sm text-center border font-semibold">
+                        {index + 1}
+                      </td>
+                      <td className="min-w-[150px] text-[13px] text-center border font-semibold">
+                        {item.title}
+                      </td>
+                      <td className="w-full text-sm text-center border font-semibold">
+                        {item.quantity || 1}
+                      </td>
+                      <td className="w-full text-sm text-center border font-semibold">
+                        {item.price}
+                      </td>
+                      <td className="w-full text-sm text-center border font-semibold">
+                        {item.price * (item.quantity || 1)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>{" "}
+          </>
+        ) : null}
       </div>
 
       <h1>

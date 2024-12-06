@@ -6,12 +6,15 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import axios from "axios";
 import OrderCard from "./orders/OrderCard";
+import Loading from "./Loading";
 
 function Order() {
   const [orders, setOrders] = useState(null);
+  const [loading, setLoading] = useState(null);
 
   useEffect(() => {
     async function fetchOrders() {
+      setLoading(true);
       const id = Cookies.get("id");
 
       console.log(id);
@@ -32,8 +35,11 @@ function Order() {
 
         if (data.success) {
           setOrders(data.result);
+
+          setLoading(false);
         }
       } catch (error) {
+        setLoading(false);
         if (error.response) {
           toast.error(error.response.message);
         }
@@ -76,12 +82,16 @@ function Order() {
           </h1>
         )}
 
-        <div>
-          {orders?.length > 0
-            ? orders?.map((item, index) => {
-                return <OrderCard detail={item} key={index} />;
-              })
-            : null}
+        <div className="relative pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-48">
+          {orders?.length > 0 ? (
+            orders?.map((item, index) => {
+              return <OrderCard detail={item} key={index} />;
+            })
+          ) : (
+            <div>
+              <Loading />
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -1,36 +1,52 @@
-import React, { createContext, useState, useEffect } from "react";
+// src/contexts/SocketContext.js
+
+import React, { createContext, useState, useContext, useEffect } from "react";
 import { io } from "socket.io-client";
-import { socketUri } from "../secret";
 
-// Create the context for the socket
-const SocketContext = createContext();
+// Set your Socket.IO server URL here
+const SOCKET_URL = "http://localhost:3000"; // Replace with your server URL
 
+// Create a Socket Context
+const SocketContext = createContext(null);
+
+// Custom hook to use the socket
 export const useSocket = () => {
-  return React.useContext(SocketContext);
+  return useContext(SocketContext);
 };
 
+// SocketProvider component
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Initialize the socket connection when the component mounts
-    const user = JSON.parse(localStorage.getItem("user"));
-    const socketInstance = io(socketUri, {
-      auth: {
-        token: user?.token,
-      },
+    // Initialize socket connection
+    const socketInstance = io(SOCKET_URL, {
+      // Add any options here (e.g., authentication, transport settings, etc.)
+      transports: ["websocket"], // Force WebSocket transport
     });
 
+    // On connection established
+    socketInstance.on("connect", () => {
+      console.log("Connected to the server with id: ", socketInstance.id);
+    });
+
+    // On disconnection
+    socketInstance.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
+
+    // Set the socket instance
     setSocket(socketInstance);
 
-    // Cleanup when the component unmounts
+    // Cleanup the socket connection when component unmounts
     return () => {
       socketInstance.disconnect();
     };
   }, []);
 
-  // Provide the socket connection to the rest of the app
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={socket}>
+      {children}
+    </SocketContext.Provider>
   );
 };
