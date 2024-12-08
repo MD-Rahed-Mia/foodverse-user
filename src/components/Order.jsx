@@ -34,12 +34,10 @@ function Order() {
   useEffect(() => {
     async function fetchOrders() {
       setLoading(true);
+      setOrders(null);
       const id = Cookies.get("id");
-
-      console.log(id);
-
+      // console.log(id);
       // if (!id) return;
-
       try {
         const { data } = await axios.get(
           `${process.env.REACT_APP_API_URL}/user/order/status-order?id=${id}&status=${status}`,
@@ -49,9 +47,7 @@ function Order() {
             },
           },
         );
-
-        console.log(data);
-
+        //  console.log(data);
         if (data.success) {
           setOrders(data.result);
           setLoading(false);
@@ -68,7 +64,7 @@ function Order() {
   return (
     <div>
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-200 to-blue-200 p-4 w-full fixed">
+      <header className="bg-gradient-to-r z-50 from-purple-200 to-blue-200 p-4 w-full fixed">
         <div className="flex flex-col items-center mb-2 mt-2 justify-between">
           <div className="w-full text-center">
             <span className="font-bold text-blue-700">My Order</span>
@@ -94,6 +90,13 @@ function Order() {
         })}
       </div>
 
+      {/* loading */}
+      {loading ? (
+        <div className="w-full py-8 flex items-center justify-center">
+          <Loading />
+        </div>
+      ) : null}
+
       {/* Main Content */}
       <main className="flex items-center flex-col justify-center min-h-screen bg-white">
         {orders?.length === 0 ? (
@@ -117,15 +120,11 @@ function Order() {
         )}
 
         <div className="relative pt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-48">
-          {orders?.length > 0 ? (
-            orders?.map((item, index) => {
-              return <OrderCard detail={item} key={index} />;
-            })
-          ) : (
-            <div>
-              <Loading />
-            </div>
-          )}
+          {orders?.length > 0
+            ? orders?.map((item, index) => {
+                return <OrderCard detail={item} key={index} />;
+              })
+            : null}
         </div>
       </main>
     </div>

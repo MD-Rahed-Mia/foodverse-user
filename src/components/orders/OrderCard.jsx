@@ -1,5 +1,6 @@
 import { IoMdAlert } from "react-icons/io";
 import React, { useEffect, useState } from "react";
+import ReviewOrder from "../review/ReviewOrder";
 
 export default function OrderCard({ detail }) {
   const [addons, setAddons] = useState([]);
@@ -164,6 +165,10 @@ export default function OrderCard({ detail }) {
       <h1>
         Payable- <span>BDT 220</span>
       </h1>
+
+      <div>
+        <ReviewOrder detail={detail}/>
+      </div>
     </div>
   );
 }
