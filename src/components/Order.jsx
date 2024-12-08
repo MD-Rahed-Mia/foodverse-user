@@ -7,10 +7,29 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import OrderCard from "./orders/OrderCard";
 import Loading from "./Loading";
+import { Link, useParams } from "react-router-dom";
+
+const orderBtn = [
+  {
+    title: "active",
+  },
+  {
+    title: "complete",
+  },
+  {
+    title: "review",
+  },
+];
 
 function Order() {
   const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(null);
+
+  const { status } = useParams();
+
+  useEffect(() => {
+    console.log(status);
+  }, [status]);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -23,31 +42,28 @@ function Order() {
 
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/user/order/list?id=${id}`,
+          `${process.env.REACT_APP_API_URL}/user/order/status-order?id=${id}&status=${status}`,
           {
             headers: {
               "x-auth-token": process.env.REACT_APP_API_TOKEN,
             },
-          }
+          },
         );
 
         console.log(data);
 
         if (data.success) {
           setOrders(data.result);
-
+          setLoading(false);
+        } else {
           setLoading(false);
         }
       } catch (error) {
         setLoading(false);
-        if (error.response) {
-          toast.error(error.response.message);
-        }
       }
     }
-
     fetchOrders();
-  }, []);
+  }, [status]);
 
   return (
     <div>
@@ -59,6 +75,24 @@ function Order() {
           </div>
         </div>
       </header>
+
+      <div className="pt-[80px] flex items-center justify-center gap-8">
+        {orderBtn.map((item, index) => {
+          return (
+            <Link
+              to={"/order/" + item.title}
+              key={index}
+              className={
+                status === item.title
+                  ? " px-2 py-1 capitalize bg-blue-500 text-white rounded-md"
+                  : "text-gray-700 px-2 py-1 capitalize"
+              }
+            >
+              {item.title}
+            </Link>
+          );
+        })}
+      </div>
 
       {/* Main Content */}
       <main className="flex items-center flex-col justify-center min-h-screen bg-white">

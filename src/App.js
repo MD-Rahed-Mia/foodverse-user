@@ -166,7 +166,7 @@ function App() {
                 }
               />
               <Route
-                path="/order"
+                path="/order/:status"
                 element={
                   <>
                     <PrivateRoute element={Order} />
@@ -207,10 +207,12 @@ function App() {
                 path="/checkout"
                 element={<PrivateRoute element={Checkout} />}
               />
+
               <Route
                 path="/notification"
                 element={<PrivateRoute element={Notification} />}
               />
+
               <Route
                 path="/setaddressmanager"
                 element={<PrivateRoute element={SetAddressManager} />}

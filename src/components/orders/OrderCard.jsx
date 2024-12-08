@@ -34,7 +34,10 @@ export default function OrderCard({ detail }) {
         O.ID- <span className="text-sm ">{detail._id}</span>
       </h1>
       <h1 className="text-gray-500 font-bold">
-        Status- <span className="px-4 py-1 bg-blue-500 text-white rounded-full text-sm">{detail.status}</span>
+        Status-{" "}
+        <span className="px-4 py-1 bg-blue-500 text-white rounded-full text-sm">
+          {detail.status}
+        </span>
       </h1>
       <h1 className="text-gray-500 font-bold">
         Payment method- <span>{detail.peymentMethod} </span>
@@ -51,11 +54,11 @@ export default function OrderCard({ detail }) {
         <h1>Food list</h1>
         <table className="w-full border">
           <thead>
-            <td className="w-full p-2 border font-semibold">SL No</td>
-            <td className="w-full p-2 border font-semibold">Item </td>
-            <td className="w-full p-2 border font-semibold">Price</td>
-            <td className="w-full p-2 border font-semibold">Quantity</td>
-            <td className="w-full p-2 border font-semibold">Sub Total</td>
+            <th className="w-full p-2 border font-semibold">SL No</th>
+            <th className="w-full p-2 border font-semibold">Item </th>
+            <th className="w-full p-2 border font-semibold">Price</th>
+            <th className="w-full p-2 border font-semibold">Quantity</th>
+            <th className="w-full p-2 border font-semibold">Sub Total</th>
           </thead>
 
           <tbody>
@@ -127,7 +130,7 @@ export default function OrderCard({ detail }) {
               <tbody>
                 {addons?.map((item, index) => {
                   return (
-                    <tr>
+                    <tr key={index}>
                       <td className="w-full text-sm text-center border font-semibold">
                         {index + 1}
                       </td>
