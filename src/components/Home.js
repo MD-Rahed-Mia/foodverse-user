@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../Layout/Footer";
-import { HiLocationMarker, HiOutlineBell, HiOutlineSearch } from "react-icons/hi";
+import {
+  HiLocationMarker,
+  HiOutlineBell,
+  HiOutlineSearch,
+} from "react-icons/hi";
 import { FaMapLocationDot } from "react-icons/fa6";
-
-
 
 function Home() {
   const cuisines = [
@@ -18,12 +20,11 @@ function Home() {
     { name: "Burger", img: "./img/burgerR.png" },
   ];
 
-  
   const ads = [
-    { src: './img/Add1.jpg', alt: 'Ad 1' },
-    { src: './img/Add2.jpg', alt: 'Ad 2' },
-    { src: './img/Add1.jpg', alt: 'Ad 3' },
-    { src: './img/Add2.jpg', alt: 'Ad 4' },
+    { src: "./img/Add1.jpg", alt: "Ad 1" },
+    { src: "./img/Add2.jpg", alt: "Ad 2" },
+    { src: "./img/Add1.jpg", alt: "Ad 3" },
+    { src: "./img/Add2.jpg", alt: "Ad 4" },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -41,13 +42,13 @@ function Home() {
   };
 
   // Automatically change the slide every 3 seconds
-useEffect(() => {
-  const interval = setInterval(() => {
-    nextSlide(); // Always move to the next slide
-  }, 3000); // 3000ms = 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide(); // Always move to the next slide
+    }, 3000); // 3000ms = 3 seconds
 
-  return () => clearInterval(interval); // Cleanup on unmount
-}, []);
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   // Handle touch events
   const handleTouchStart = (e) => {
@@ -61,33 +62,36 @@ useEffect(() => {
   const handleTouchEnd = () => {
     const swipeThreshold = 50; // Minimum swipe distance
     const swipeDistance = touchStartX - touchEndX;
-  
+
     if (swipeDistance > swipeThreshold) {
       nextSlide(); // Swipe left for the next slide
     } else if (swipeDistance < -swipeThreshold) {
       prevSlide(); // Swipe right for the previous slide
     }
   };
- 
+
   return (
     <>
-      <div className='bg-white'>
+      <div className="bg-white">
         {/* Header section */}
-        <div className='bg-red-500 w-full fixed z-10'>
+        <div className="bg-red-500 w-full fixed z-10">
           <header className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 pb-8 px-4 flex items-center justify-between">
             <Link to="/AddressManager">
-            <div className="flex items-center">
-              {/* Location Icon */}
-              <HiLocationMarker className="size-6 text-white" />
-              <div className="ml-2 text-white text-sm">
-                <span className="block">{/* {userAddress && userAddress.address ? userAddress.address :*/} Location not set </span> 
+              <div className="flex items-center">
+                {/* Location Icon */}
+                <HiLocationMarker className="size-6 text-white" />
+                <div className="ml-2 text-white text-sm">
+                  <span className="block">
+                    {/* {userAddress && userAddress.address ? userAddress.address :*/}{" "}
+                    Location not set{" "}
+                  </span>
+                </div>
               </div>
-            </div>
             </Link>
             {/* Notification Icon */}
             <div>
-              <Link to="/Notification">
-                <HiOutlineBell className="size-6 text-white" /> 
+              <Link to="/notification/all">
+                <HiOutlineBell className="size-6 text-white" />
               </Link>
             </div>
           </header>
@@ -107,85 +111,96 @@ useEffect(() => {
           </section>
         </div>
 
-        
-        <div>  
-        {/* Slider section */}
-        <section className="px-3 py-1">
-          <div 
-            className="relative w-full max-w-lg mx-auto mt-28 overflow-hidden rounded-lg shadow-lg"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+        <div>
+          {/* Slider section */}
+          <section className="px-3 py-1">
             <div
-              className="flex transition-transform duration-500"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              className="relative w-full max-w-lg mx-auto mt-28 overflow-hidden rounded-lg shadow-lg"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
-              {ads.map((ad, index) => (
-                <div key={index} className="min-w-full">
-                  <img src={ad.src} alt={ad.alt} className="w-full rounded-lg" />
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </section>
-
-        {/* Popular cuisines */}
-        <section className="p-3">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-xl font-semibold text-purple-600">Popular Cuisines</h2>
-            <Link to="" className="text-blue-600 font-semibold hover:underline">
-              See All
-            </Link>
-          </div>
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
-            {cuisines.map((cuisine, index) => (
-              <Link to={`/cuisine/${cuisine.name}`} key={index} className="flex flex-col items-center">
-                <img
-                  src={cuisine.img}
-                  alt={cuisine.name}
-                  className="w-14 h-14 sm:w-20 sm:h-20 rounded-full shadow-md object-cover"
-                />
-                <span className="mt-2 text-sm sm:text-base font-medium text-gray-700">
-                  {cuisine.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-        </div>
-
-        <div className='mt-5'>
-          
-        </div>
-        
-        <div>  
-        {/* Homw Empty Massage */}
-        <section className='flex items-center justify-center min-h-screen bg-white'>
-        <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-6 rounded-full">
-                <FaMapLocationDot className="size-16 text-blue-700" />
+              <div
+                className="flex transition-transform duration-500"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {ads.map((ad, index) => (
+                  <div key={index} className="min-w-full">
+                    <img
+                      src={ad.src}
+                      alt={ad.alt}
+                      className="w-full rounded-lg"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
+          </section>
 
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Please Set Your Address
-            </h2>
-            <p className="text-gray-600">We will give you restaurant and food item</p>
-            <p className="text-gray-600 mb-6">according to your location.</p>
+          {/* Popular cuisines */}
+          <section className="p-3">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-xl font-semibold text-purple-600">
+                Popular Cuisines
+              </h2>
+              <Link
+                to=""
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                See All
+              </Link>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
+              {cuisines.map((cuisine, index) => (
+                <Link
+                  to={`/cuisine/${cuisine.name}`}
+                  key={index}
+                  className="flex flex-col items-center"
+                >
+                  <img
+                    src={cuisine.img}
+                    alt={cuisine.name}
+                    className="w-14 h-14 sm:w-20 sm:h-20 rounded-full shadow-md object-cover"
+                  />
+                  <span className="mt-2 text-sm sm:text-base font-medium text-gray-700">
+                    {cuisine.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
 
-            <Link
-              to="/SetAddressManager"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-              Add Address
-            </Link>
-          </div>
-        </section>
-       </div>
-        
+        <div className="mt-5"></div>
+
+        <div>
+          {/* Homw Empty Massage */}
+          <section className="flex items-center justify-center min-h-screen bg-white">
+            <div className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-6 rounded-full">
+                  <FaMapLocationDot className="size-16 text-blue-700" />
+                </div>
+              </div>
+
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                Please Set Your Address
+              </h2>
+              <p className="text-gray-600">
+                We will give you restaurant and food item
+              </p>
+              <p className="text-gray-600 mb-6">according to your location.</p>
+
+              <Link
+                to="/SetAddressManager"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
+              >
+                Add Address
+              </Link>
+            </div>
+          </section>
+        </div>
+
         <Footer />
       </div>
     </>

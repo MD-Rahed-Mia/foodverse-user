@@ -102,9 +102,11 @@ function ReviewItem({ detail }) {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Review
-      </Button>
+      <div className="w-full flex items-center justify-center">
+        <Button type="primary" className="w-fit mx-auto" onClick={showModal}>
+          Review
+        </Button>
+      </div>
       <Modal
         title="Submit Review"
         open={isModalOpen}

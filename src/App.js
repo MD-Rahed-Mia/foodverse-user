@@ -42,6 +42,7 @@ import Cookies from "js-cookie";
 import Notification from "./components/Notification.js";
 import SetAddressManager from "./components/SetAddressManager.js";
 import { useSocket } from "./contexts/SocketIo.js";
+import RatingPage from "./pages/RatingPage.jsx";
 
 function App() {
   const socket = useSocket();
@@ -121,6 +122,15 @@ function App() {
                 element={
                   <>
                     <PrivateRoute element={Home} />
+                    <Footer />{" "}
+                  </>
+                }
+              />
+              <Route
+                path="/rating/:restaurantId"
+                element={
+                  <>
+                    <PrivateRoute element={RatingPage} />
                     <Footer />{" "}
                   </>
                 }
@@ -209,7 +219,7 @@ function App() {
               />
 
               <Route
-                path="/notification"
+                path="/notification/:type"
                 element={<PrivateRoute element={Notification} />}
               />
 

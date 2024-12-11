@@ -3,6 +3,7 @@ import { api_path_url, authToken } from "../secret";
 import MenuCard from "./MenuCard";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";
+import { Link } from "react-router-dom";
 
 const RestaurantPage = () => {
   const [menu, setMenu] = useState(null);
@@ -29,7 +30,7 @@ const RestaurantPage = () => {
 
         const result = await apiResponse.json();
 
-     //   console.log(result);
+        //   console.log(result);
 
         if (result) {
           setLoading(false);
@@ -37,7 +38,7 @@ const RestaurantPage = () => {
           setRestaurant(result?.restaurant);
         }
       } catch (error) {
-     //   console.log(error);
+        //   console.log(error);
         setLoading(false);
       }
     }
@@ -47,7 +48,7 @@ const RestaurantPage = () => {
 
   return (
     <div className="bg-gradient-to-r from-purple-200 to-blue-200 min-h-screen ">
-      <div className= "w-full fixed z-10">
+      <div className="w-full fixed z-10">
         {/* Header Section */}
         <header className="bg-white p-4 m-4 -mb-4 rounded-lg shadow-lg flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -88,8 +89,19 @@ const RestaurantPage = () => {
                   d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
                 />
               </svg>
-              <span className="text-lg font-semibold text-gray-800">{ restaurant?.averageReview}</span>
-              <span className="text-sm text-gray-600">{ restaurant?.totalReviews}+ ratings</span>
+              <span className="text-lg font-semibold text-gray-800">
+                {restaurant?.averageReview}
+              </span>
+              <Link
+                to={`/rating/${restaurant?._id}`}
+                className={
+                  loading
+                    ? "text-sm text-gray-600 cursor-none"
+                    : "text-sm text-gray-600"
+                }
+              >
+                {restaurant?.totalReviews}+ ratings
+              </Link>
             </div>
             <div className="text-sm text-gray-600">
               <p>
