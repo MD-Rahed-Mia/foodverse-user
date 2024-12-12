@@ -1,9 +1,27 @@
 import { IoMdAlert } from "react-icons/io";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReviewOrder from "../review/ReviewOrder";
+import { useSocket } from "../../contexts/SocketIo";
+import { BsChatSquareText } from "react-icons/bs";
+import { RxCross1 } from "react-icons/rx";
+import axios from "axios";
+import { IoIosSend } from "react-icons/io";
+import { api_path_url } from "../../secret";
+import Cookies from "js-cookie";
 
 export default function OrderCard({ detail }) {
   const [addons, setAddons] = useState([]);
+  const [isChatboxOpen, setIsChatBoxOpen] = useState(false);
+
+  const socket = useSocket();
+
+  if (socket) {
+    //  console.log("socket is connected.");
+
+    socket.on("recieveMessage", (data) => {
+      console.log(data);
+    });
+  }
 
   // console.log(detail);
 
@@ -165,9 +183,177 @@ export default function OrderCard({ detail }) {
       <h1>
         Payable- <span>BDT 220</span>
       </h1>
-
       <div>
-        <ReviewOrder detail={detail}/>
+        <BsChatSquareText
+          className="text-2xl mt-4 cursor-pointer "
+          onClick={() => setIsChatBoxOpen(true)}
+        />
+      </div>
+      <div>
+        {detail.status === "delivered" ? <ReviewOrder detail={detail} /> : null}
+      </div>
+
+      {detail?.status === "accept by restaurant" && isChatboxOpen ? (
+        <ChatBoxWithRestaurant
+          setIsChatBoxOpen={setIsChatBoxOpen}
+          isChatboxOpen={isChatboxOpen}
+          orderId={detail._id}
+          restaurantId={detail.restaurantId}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function ChatBoxWithRestaurant({
+  isChatboxOpen,
+  setIsChatBoxOpen,
+  orderId,
+  restaurantId,
+}) {
+  const [messages, setMessages] = useState([]); // Initialize as an empty array
+  const [sms, setSms] = useState("");
+  const socket = useSocket();
+  const chatBoxRef = useRef(null);
+
+  // Scroll to the bottom of the chat box whenever messages change
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Fetch previous messages when the component mounts
+  useEffect(() => {
+    async function getChat() {
+      try {
+        const { data } = await axios.get(
+          `${api_path_url}/chat/user/restaurant?id=${orderId}`
+        );
+
+        if (data.success) {
+          setMessages(data.message); // Populate the messages state
+        }
+      } catch (error) {
+        console.error("Error fetching chat messages: ", error.message);
+      }
+    }
+    getChat();
+  }, [orderId]);
+
+  // Listen for incoming messages via socket
+  useEffect(() => {
+    if (socket) {
+      socket.on("recieveMessage", (data) => {
+        const parsedData = JSON.parse(data);
+        setMessages((prev) => [...prev, parsedData.message]); // Append new message
+      });
+
+      // Clean up the listener on unmount
+      return () => {
+        socket.off("recieveMessage");
+      };
+    }
+  }, [socket]);
+
+  // Handle sending a message
+  const sendMessage = () => {
+    const id = Cookies.get("id");
+
+    console.log(restaurantId);
+
+    if (!id) {
+      console.log("User ID not found.");
+      return;
+    }
+
+    if (sms.length === 0) {
+      return;
+    }
+
+    const newMessage = {
+      message: sms,
+      userId: restaurantId,
+      sender: "user",
+      orderId,
+    };
+
+    if (socket) {
+      socket.emit("sendMessage", JSON.stringify(newMessage)); // Emit message
+      setMessages((prev) => [...prev, newMessage]); // Optimistically update state
+      setSms(""); // Clear input field
+    }
+  };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("sendToUserOrRestaurant", (data) => {
+        const parseData = JSON.parse(data);
+        console.log(parseData);
+        setMessages((prev) => [...prev, parseData]);
+      });
+    }
+  }, [socket]);
+
+  return (
+    <div className="w-full h-screen fixed z-50 top-0 left-0 flex items-center justify-center bg-[#000042]">
+      <div className="relative w-full min-h-screen bg-white rounded-md shadow-lg">
+        <div>
+          <RxCross1
+            className="absolute top-4 right-4 cursor-pointer text-2xl text-red-500"
+            onClick={() => setIsChatBoxOpen(!isChatboxOpen)}
+          />
+        </div>
+
+        <div className="h-screen w-full">
+          <h1 className="text-center py-4 text-white w-full bg-blue-500 my-2 text-2xl font-semibold">
+            Chat with restaurant
+          </h1>
+
+          <div className="flex items-center justify-between h-[90%] w-full border flex-col">
+            {/* Messages display */}
+            <div
+              ref={chatBoxRef}
+              className="h-[90%] border w-full overflow-y-scroll relative flex flex-col"
+            >
+              {messages.map((msg, index) => (
+                <span
+                  key={index}
+                  className={`${
+                    msg.sender === "user" ? "text-right " : "text-left "
+                  } w-full py-1 px-3 my-1 text-orange-700`}
+                >
+                  <span
+                    className={`${
+                      msg.sender === "user"
+                        ? "text-right bg-blue-500 text-white"
+                        : "text-left bg-blue-300 text-white"
+                    } w-full py-1 px-4 my-1 rounded-full text-orange-700`}
+                  >
+                    {msg.message}
+                  </span>
+                </span>
+              ))}
+            </div>
+
+            {/* Input field and send button */}
+            <div className="w-full flex items-center justify-between px-3">
+              <input
+                type="text"
+                placeholder="Write a message"
+                className="my-1 w-full px-2 py-1 border"
+                onChange={(e) => setSms(e.target.value)}
+                value={sms}
+              />
+              <div>
+                <IoIosSend
+                  className="text-3xl cursor-pointer"
+                  onClick={sendMessage}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
