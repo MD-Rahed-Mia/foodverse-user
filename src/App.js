@@ -43,6 +43,7 @@ import Notification from "./components/Notification.js";
 import SetAddressManager from "./components/SetAddressManager.js";
 import { useSocket } from "./contexts/SocketIo.js";
 import RatingPage from "./pages/RatingPage.jsx";
+import LiveChatWithRestaurant from "./components/LiveChat";
 
 function App() {
   const socket = useSocket();
@@ -175,6 +176,16 @@ function App() {
                   </>
                 }
               />
+
+              <Route
+                path="/live-chat/:userId/:orderId"
+                element={
+                  <>
+                    <PrivateRoute element={LiveChatWithRestaurant} />
+                  </>
+                }
+              />
+
               <Route
                 path="/order/:status"
                 element={
