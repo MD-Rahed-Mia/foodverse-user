@@ -44,6 +44,7 @@ import SetAddressManager from "./components/SetAddressManager.js";
 import { useSocket } from "./contexts/SocketIo.js";
 import RatingPage from "./pages/RatingPage.jsx";
 import LiveChatWithRestaurant from "./components/LiveChat";
+import LiveChatWithRider from "./components/LiveChatWithRider.jsx";
 
 function App() {
   const socket = useSocket();
@@ -182,6 +183,15 @@ function App() {
                 element={
                   <>
                     <PrivateRoute element={LiveChatWithRestaurant} />
+                  </>
+                }
+              />
+
+              <Route
+                path="/live-chat-rider/:userId/:orderId"
+                element={
+                  <>
+                    <PrivateRoute element={LiveChatWithRider} />
                   </>
                 }
               />

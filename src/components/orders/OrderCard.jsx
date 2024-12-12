@@ -220,8 +220,12 @@ export default function OrderCard({ detail }) {
         />
       ) : null} */}
 
-      <Link to={`/live-chat/${detail.restaurantId}/${detail._id}`}>
+      {/* <Link to={`/live-chat/${detail.restaurantId}/${detail._id}`}>
         Chat with restaurant
+      </Link> */}
+
+      <Link to={`/live-chat-rider/${detail.riderId}/${detail._id}`}>
+        Chat with rider
       </Link>
     </div>
   );
