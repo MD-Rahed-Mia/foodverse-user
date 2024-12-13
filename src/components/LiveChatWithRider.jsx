@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api_path_url, authToken } from "../secret";
 import { useSocket } from "../contexts/SocketIo";
+import { DateTime } from "luxon";
 
 const LiveChatWithRider = () => {
   const [messages, setMessages] = useState([]);
@@ -31,6 +32,7 @@ const LiveChatWithRider = () => {
         message: input,
         sender: "user",
         orderId: orderId,
+        createAt: new Date().toISOString(),
       };
       socket.emit("sendMessageToRider", JSON.stringify(message));
       setMessages((prev) => [...prev, message]);
@@ -64,7 +66,7 @@ const LiveChatWithRider = () => {
             headers: {
               "x-auth-token": authToken,
             },
-          },
+          }
         );
 
         console.log(data);
@@ -107,9 +109,11 @@ const LiveChatWithRider = () => {
       <div className="w-full h-full md:max-w-2xl md:h-5/6 bg-white shadow-lg rounded-lg flex flex-col">
         {/* Chat Header */}
         <div className="bg-blue-600 p-4 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-white">Live Chat With Rider</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            Live Chat With Rider
+          </h2>
           <Link
-            to={"/rider/order-waiting"}
+            to={"/order/active"}
             className="text-white focus:outline-none"
           >
             {/* Add a logout or close button if needed */}
@@ -145,6 +149,11 @@ const LiveChatWithRider = () => {
               }`}
             >
               {msg.message}
+              <span className="text-[11px] block text-right">
+                {DateTime.fromISO(msg.createAt, "hh:mm:ss a")
+                  .setZone("Asia/Dhaka")
+                  .toFormat("hh:mm:ss a")}
+              </span>
             </div>
           ))}
         </div>

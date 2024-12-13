@@ -109,9 +109,9 @@ const LiveChatWithRestaurant = () => {
       <div className="w-full h-full md:max-w-2xl md:h-5/6 bg-white shadow-lg rounded-lg flex flex-col">
         {/* Chat Header */}
         <div className="bg-blue-600 p-4 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-white">Live Chat</h2>
+          <h2 className="text-2xl font-semibold text-white">Live Chat with Restaurant</h2>
           <Link
-            to={"/rider/order-waiting"}
+            to={"/order/active"}
             className="text-white focus:outline-none"
           >
             {/* Add a logout or close button if needed */}

@@ -45,6 +45,8 @@ import { useSocket } from "./contexts/SocketIo.js";
 import RatingPage from "./pages/RatingPage.jsx";
 import LiveChatWithRestaurant from "./components/LiveChat";
 import LiveChatWithRider from "./components/LiveChatWithRider.jsx";
+import MessageToast from "./components/toast/MessageToast.jsx";
+import OrderToast from "./components/toast/OrderToast.jsx";
 
 function App() {
   const socket = useSocket();
@@ -61,6 +63,7 @@ function App() {
     <AuthProvider>
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
+
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
         <meta
@@ -103,6 +106,11 @@ function App() {
       <CartProvider>
         <Router>
           <div className="App">
+            {/* message toast */}
+            <MessageToast />
+
+            {/* order taost */}
+            <OrderToast />
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -192,6 +200,14 @@ function App() {
                 element={
                   <>
                     <PrivateRoute element={LiveChatWithRider} />
+                  </>
+                }
+              />
+              <Route
+                path="/live-chat-restaurant/:userId/:orderId"
+                element={
+                  <>
+                    <PrivateRoute element={LiveChat} />
                   </>
                 }
               />

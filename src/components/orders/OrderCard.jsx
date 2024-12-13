@@ -9,6 +9,8 @@ import { IoIosSend } from "react-icons/io";
 import { api_path_url } from "../../secret";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
+import { IoRestaurantSharp } from "react-icons/io5";
+import { CiDeliveryTruck } from "react-icons/ci";
 
 export default function OrderCard({ detail }) {
   const [addons, setAddons] = useState([]);
@@ -46,7 +48,7 @@ export default function OrderCard({ detail }) {
   }, [addons]);
 
   return (
-    <div className="w-[90%] mx-auto  bg-white min-h-[300px] relative shadow-md border rounded-md p-4">
+    <div className="w-[90%] mx-auto text-sm  bg-white min-h-[300px] relative shadow-md border rounded-md p-4">
       {/* alert icon */}
       <div className="absolute top-2 right-4 cursor-pointer text-orange-400">
         <IoMdAlert />
@@ -185,31 +187,31 @@ export default function OrderCard({ detail }) {
       <h1>
         Payable- <span>BDT 220</span>
       </h1>
-      <div>
+      {/* <div>
         <BsChatSquareText
           className="text-2xl mt-4 cursor-pointer "
           onClick={() => setIsChatBoxOpen(true)}
         />
-      </div>
+      </div> */}
       <div>
         {detail.status === "delivered" ? <ReviewOrder detail={detail} /> : null}
       </div>
 
-      <div
+      {/* <div
         className="px-3 py-1 rounded-full cursor-pointer bg-blue-500 text-white"
         onClick={() => setRiderChatBoxOpen(!riderChatBoxOpen)}
       >
         chat with rider
-      </div>
+      </div> */}
 
-      {detail?.status === "accept by restaurant" && isChatboxOpen ? (
+      {/* {detail?.status === "accept by restaurant" && isChatboxOpen ? (
         <ChatBoxWithRestaurant
           setIsChatBoxOpen={setIsChatBoxOpen}
           isChatboxOpen={isChatboxOpen}
           orderId={detail._id}
           restaurantId={detail.restaurantId}
         />
-      ) : null}
+      ) : null} */}
 
       {/* {riderChatBoxOpen ? (
         <ChatBoxWithRider
@@ -223,10 +225,26 @@ export default function OrderCard({ detail }) {
       {/* <Link to={`/live-chat/${detail.restaurantId}/${detail._id}`}>
         Chat with restaurant
       </Link> */}
+      {detail.status === "accept by restaurant" ||
+      detail.status === "ready for pickup"  ||
+      detail.status === "accept by rider" ? (
+        <Link
+          to={`/live-chat-restaurant/${detail.restaurantId}/${detail._id}`}
+          className="flex items-center justify-center gap-2 absolute top-8 right-3 shadow-md border p-1 text-lg bg-white cursor-pointer"
+        >
+          <IoRestaurantSharp /> chat
+        </Link>
+      ) : null}
 
-      <Link to={`/live-chat-rider/${detail.riderId}/${detail._id}`}>
-        Chat with rider
-      </Link>
+      {detail.status === "picked up" ||
+      detail.status === "ready for pickup" ? (
+        <Link
+          to={`/live-chat-rider/${detail.riderId}/${detail._id}`}
+          className="flex items-center justify-center gap-2 absolute top-8 right-3 shadow-md border p-1 text-lg bg-white cursor-pointer"
+        >
+          <CiDeliveryTruck /> chat
+        </Link>
+      ) : null}
     </div>
   );
 }
