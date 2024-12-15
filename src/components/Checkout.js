@@ -16,11 +16,14 @@ import AddressCarousel from "./address/AddressCarousel";
 const CheckoutPage = () => {
   const location = useLocation();
 
+  const [deliveryCharge, setDeliveryCharge] = useState(null); // Delivery charge
+
   // socket io
   const socket = useSocket();
 
   //payment status
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [deliveryChargeLoading, setDeliveryChargeLoading] = useState(null);
 
   // const queryParams = new URLSearchParams(location.search);
   // const passedSubtotal = parseFloat(queryParams.get("subtotal")) || 0; // Retrieve subtotal from URL query parameters
@@ -31,11 +34,153 @@ const CheckoutPage = () => {
   const [loadingAddress, setLoadingAddress] = useState(null);
   const [addressList, setAddressList] = useState(null);
 
+  const [addressLabel, setAddressLabel] = useState(null);
+
+  // current charge list
+  const [chargeList, setChargeList] = useState(null);
+
   const { user } = useAuth();
 
   useEffect(() => {
+    // get chargeList
+    async function getChargeList() {
+      try {
+        const { data } = await axios.get(
+          `${api_path_url}/charges/active-schedule`,
+          {
+            headers: {
+              "x-auth-token": authToken,
+            },
+          }
+        );
+
+        console.log(data);
+        setChargeList(data.charges[0]);
+      } catch (error) {}
+
+      // if (data.success) {
+      //   console.log(`charges is : ${data.charges[0]}`);
+      //   setChargeList(data.charges[0]);
+      // } else {
+      //   toast.error("something went wrong. Please try again.");
+      // }
+    }
+
+    getChargeList();
+  }, []);
+
+  useEffect(() => {
+    console.log("charge list : ", chargeList);
+  }, [chargeList]);
+
+  // check delivery charge
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+  useEffect(() => {
+    async function fetchAndCalculate() {
+      setDeliveryChargeLoading(true);
+      async function getRestaurantCoordinator() {
+        const localRestaurantId = localStorage.getItem("cartRest");
+
+        try {
+          const { data } = await axios.get(
+            `${api_path_url}/restaurant/address/coordinator?id=${localRestaurantId}`,
+            {
+              headers: {
+                "x-auth-token": authToken,
+              },
+            }
+          );
+
+          console.log(data);
+
+          if (data.success) {
+            return {
+              latitude: data.coordinator.lat,
+              longitude: data.coordinator.long,
+            };
+          } else {
+            toast.error("Failed to get restaurant location.");
+            return null;
+          }
+        } catch (error) {
+          toast.error("Error fetching restaurant location.");
+          console.error(error);
+          return null;
+        }
+      }
+      const coordinator = await getRestaurantCoordinator();
+      console.log(coordinator); // Logs resolved value of the promise
+
+      if (coordinator && addressLabel) {
+        const result = calculateDistance(
+          addressList[addressLabel]?.latitude,
+          addressList[addressLabel]?.longitude,
+          parseFloat(coordinator.latitude),
+          parseFloat(coordinator.longitude)
+        );
+
+        // console.log(`Result is: ${result}`);
+        // console.log(`Delivery charge is 15TK per km: ${result * 15}`);
+
+        // if (result <= 1) {
+        //   setDeliveryChargeLoading(false);
+        //   setDeliveryCharge(25);
+        // } else {
+        //   const charge = result * 25;
+        //   console.log(`charge is ${charge}`);
+        //   setDeliveryCharge(charge);
+        //   setDeliveryChargeLoading(false);
+        // }
+
+        const firstKm = chargeList?.userFirstKMCharge;
+
+        // console.log(chargeList);
+
+        if (result <= 1) {
+          setDeliveryCharge(chargeList?.userFirstKMCharge);
+          setRiderFee(chargeList?.riderFirstKMCharge);
+        } else {
+          const resultAfterOneKM = result - 1;
+          const othersKMFee = resultAfterOneKM * chargeList?.userOthersKMCharge;
+          const totalFee = firstKm + othersKMFee;
+          console.log(totalFee);
+          setDeliveryCharge(totalFee);
+
+          // calculate rider fee
+          const ridersFeeForOthersKM =
+            resultAfterOneKM * chargeList?.riderOthersKMCharge;
+          const riderTotalFee = 20 + ridersFeeForOthersKM;
+          setRiderFee(riderTotalFee);
+
+          console.log(`rider fee for delivery : ${riderTotalFee}`);
+        }
+        setDeliveryChargeLoading(false);
+      }
+    }
+
+    if (addressLabel) {
+      fetchAndCalculate();
+    }
+  }, [addressLabel]);
+
+  // useEffect(() => {
+  //   console.log(addressLabel);
+  // }, [addressLabel]);
+
+  useEffect(() => {
     async function getDeliveryLocationList() {
-      setLoadingAddress(true);
       const id = Cookies.get("id");
       try {
         const { data } = await axios.get(
@@ -51,7 +196,6 @@ const CheckoutPage = () => {
 
         if (data.success) {
           setAddressList(data.address);
-          setLoadingAddress(false);
         }
       } catch (error) {
         throw new Error(error);
@@ -66,7 +210,9 @@ const CheckoutPage = () => {
   const [instructions, setInstructions] = useState("");
   const [selectedAddress, setSelectedAddress] = useState("");
 
-  const [deliveryCharge, setDeliveryCharge] = useState(25); // Delivery charge
+  // rider fee for rider
+  const [riderFee, setRiderFee] = useState(0);
+
   const [showBkashModal, setShowBkashModal] = useState(false); // Modal for Bkash
   const [isProcessing, setIsProcessing] = useState(false); // Processing state
   const [selectedNumber, setSelectedNumber] = useState(null);
@@ -78,24 +224,6 @@ const CheckoutPage = () => {
   // cart
   const { cart, setCart } = useCartContext();
   const navigate = useNavigate();
-
-  // socket
-  // const socket = useSocket();
-
-  // user data
-  // console.log(user);
-  // useEf  fect(() => {
-  //   if (socket) {
-  //     const user = JSON.parse(localStorage.getItem("user"));
-  //     socket.emit("auth", user.id);
-  //   }
-  // }, [socket]);
-
-  // console.log(cart);
-
-  // useEffect(() => {
-  //   setTotalAmount(passedSubtotal); // Ensure totalAmount is updated with passedSubtotal initially
-  // }, [passedSubtotal]);
 
   const handlePlaceOrder = async () => {
     if (selectedAddress === undefined || selectedAddress === "") {
@@ -161,6 +289,7 @@ const CheckoutPage = () => {
         discount,
         addonTotal,
         customerPhone: selectedNumber,
+        riderFee: riderFee,
       };
 
       const response = await axios.post(
@@ -175,8 +304,7 @@ const CheckoutPage = () => {
       );
 
       if (response.data.success) {
-        
-        if (socket && socket.connected) { 
+        if (socket && socket.connected) {
           socket.emit("sendOrderToRestaurant", response.data.result);
         } else {
           console.warn("Socket is not connected. Order notification not sent.");
@@ -247,6 +375,7 @@ const CheckoutPage = () => {
         discount,
         addonTotal,
         customerPhone: selectedNumber,
+        riderFee: riderFee,
       };
 
       //   console.log("alert method: ");
@@ -299,11 +428,22 @@ const CheckoutPage = () => {
           </div>
         </section>
         {/* Delivery fee */}
-        <section className="text-center">
-          <p>Delivery Change: 25 TK</p>
-        </section>
 
         {/* Delivery Address Section */}
+
+        {deliveryChargeLoading ? (
+          <section className="text-center">
+            <h1>Loading...</h1>
+          </section>
+        ) : (
+          <section className="text-center">
+            {deliveryCharge !== null ? (
+              <p>Delivery Charge: {deliveryCharge.toFixed(2)} TK</p>
+            ) : (
+              <h1>Please select delivery address to see delivery charge.</h1>
+            )}
+          </section>
+        )}
 
         {/* carosuel address */}
         {addressList === null ? (
@@ -315,6 +455,7 @@ const CheckoutPage = () => {
             addressList={addressList}
             setSelectedAddress={setSelectedAddress}
             setSelectedNumber={setSelectedNumber}
+            setAddressLabel={setAddressLabel}
           />
         )}
 

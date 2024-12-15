@@ -5,6 +5,7 @@ import { api_path_url, authToken } from "../secret";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import Loading from "./Loading";
+import { Link } from "react-router-dom";
 
 const AddressManager = () => {
   const [addresses, setAddresses] = useState([]);
@@ -53,9 +54,8 @@ const AddressManager = () => {
 
           //Address save localStorage
           if (arr.length > 0) {
-            localStorage.setItem("userAddress", JSON.stringify(arr[0])); 
+            localStorage.setItem("userAddress", JSON.stringify(arr[0]));
           }
-
         }
       } catch (error) {
         setLoading(false);
@@ -242,9 +242,6 @@ const AddressManager = () => {
   //   console.log(addresses);
   // }, [addresses]);
 
-       
-  
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 rounded-md">
@@ -337,12 +334,13 @@ const AddressManager = () => {
           )}
         </ul>
         <div className="text-center">
-          <button
+          <Link
+            to={"/setaddressmanager"}
             className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 "
             onClick={() => setShowAddressForm(true)}
           >
             + Add Another Address
-          </button>
+          </Link>
         </div>
       </div>
 

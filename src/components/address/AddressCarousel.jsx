@@ -5,6 +5,7 @@ export default function AddressCarousel({
   addressList,
   setSelectedAddress,
   setSelectedNumber,
+  setAddressLabel,
 }) {
   // State to track the selected address key
   const [selectedKey, setSelectedKey] = useState(null);
@@ -37,6 +38,7 @@ export default function AddressCarousel({
                 setSelectedAddress(value.address);
                 setSelectedKey(key); // Set the selected key
                 setSelectedNumber(value.phoneNumber);
+                setAddressLabel(value.label);
               }}
             >
               <div>
