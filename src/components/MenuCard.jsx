@@ -4,6 +4,7 @@ import { HiOutlineHeart } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FiMinus } from "react-icons/fi";
+import { FaGift } from "react-icons/fa6";
 
 export default function MenuCard({ detail }) {
   const [showModal, setShowModal] = useState(false);
@@ -14,6 +15,12 @@ export default function MenuCard({ detail }) {
   const [addonList, setAddonList] = useState([]);
 
   // console.log(detail);
+
+  // handle average food
+  function handleFavouriteItems(event) {
+    event.stopPropagation();
+    console.log(`items is clicked: `);
+  }
 
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
@@ -42,8 +49,22 @@ export default function MenuCard({ detail }) {
           alt={detail?.name}
           className="w-full h-32 sm:h-48 md:h-56 lg:h-72 object-cover rounded-md"
         />
+
+        {/* discount rate */}
+        {detail.discountRate > 0 ? (
+          <div className="absolute top-2 left-2 px-3 py-1 bg-pink-500 text-white text-[12px] flex items-center justify-center rounded-full gap-2">
+            <span>
+              <FaGift />
+            </span>{" "}
+            <span>upto {detail.discountRate}% off</span>
+          </div>
+        ) : null}
+
         {/* Favourite */}
-        <HiOutlineHeart className="size-5 text-gray-500 absolute right-2 top-2 rounded-md" />
+        <HiOutlineHeart
+          className=" h-8 w-8 cursor-pointer px-2 py-2 rounded-full bg-white text-gray-500 absolute right-2 top-2 "
+          onClick={handleFavouriteItems}
+        />
         <h3 className="text-sm font-semibold text-gray-800 mx-2 mt-2">
           {detail?.name}
         </h3>
@@ -243,7 +264,7 @@ const AddonItem = ({
     } else {
       // If the item is deselected, remove it from the addonList
       const filterAddon = addonList.filter(
-        (it) => it._id.toString() === item._id.toString(),
+        (it) => it._id.toString() === item._id.toString()
       );
 
       // Update the addonList without the deselected item

@@ -9,6 +9,10 @@ function RestaurantCard({ detail }) {
   useEffect(() => {
     if (detail) {
       try {
+        if (!detail.isOpen) {
+          setIsOpen(false);
+          return;
+        }
         // Parse and standardize time strings
         const openingTime = detail.openingTime.trim().toUpperCase();
         const closingTime = detail.closingTime.trim().toUpperCase();
@@ -46,7 +50,11 @@ function RestaurantCard({ detail }) {
   }, [detail]);
 
   return (
-    <div className="w-full border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative">
+    <div
+      className={`w-full border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${
+        isOpen ? "cursor-pointer" : "cursor-not-allowed"
+      }`}
+    >
       <Link to={`/restaurant/${detail._id}`}>
         <img
           src={detail.image || "/img/default_rest_image.webp"}

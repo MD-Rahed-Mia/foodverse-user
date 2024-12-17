@@ -39,6 +39,7 @@ const SearchPage = () => {
         toast.error("please enter your desire items.", {
           duration: 700,
         });
+        setLoading(false);
         return;
       }
 
@@ -48,7 +49,7 @@ const SearchPage = () => {
           headers: {
             "x-auth-token": authToken,
           },
-        },
+        }
       );
 
       console.log(data);
@@ -81,6 +82,7 @@ const SearchPage = () => {
         toast.error("please enter your desire items.", {
           duration: 700,
         });
+        setLoading(false);
         return;
       }
 
@@ -90,7 +92,7 @@ const SearchPage = () => {
           headers: {
             "x-auth-token": authToken,
           },
-        },
+        }
       );
 
       console.log(data);
@@ -176,7 +178,7 @@ const SearchPage = () => {
         </div>
 
         {/* Suggestions Section */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2">Suggestions</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-lg shadow-md p-3 flex items-center space-x-2">
@@ -212,7 +214,7 @@ const SearchPage = () => {
               <div className="text-sm font-medium">Special Set Menu</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Popular Categories Section */}
         {/* <div>
@@ -257,7 +259,9 @@ const SearchPage = () => {
 
       {/* result */}
       <div
-        className={`grid w-[92%] mx-auto px-3 py-4 ${searchBtn === "restaurant" ? "grid-cols-1" : "grid-cols-2"} gap-3 md:grid-cols-3 lg:grid-cols-5`}
+        className={`grid w-[92%] mx-auto px-3 py-4 ${
+          searchBtn === "restaurant" ? "grid-cols-1" : "grid-cols-2"
+        } gap-3 md:grid-cols-3 lg:grid-cols-5`}
       >
         {loading ? (
           <div className="w-full py-12 flex items-center justify-center">

@@ -31,6 +31,12 @@ export default function CategoryFilter() {
     <div>
       <div className="pt-24"></div>
 
+      <div>
+        {items?.length === 0 || items === null ? (
+          <h1 className="text-center mt-4">No Items found.</h1>
+        ) : null}
+      </div>
+
       <div className="max-w-[80%] mx-auto flex items-center justify-center gap-8">
         {items &&
           items.map((item) => {

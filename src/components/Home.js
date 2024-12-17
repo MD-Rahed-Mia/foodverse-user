@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { api_path_url, authToken } from "../secret";
+
 import Footer from "../Layout/Footer";
+
 import {
   HiLocationMarker,
   HiOutlineBell,
   HiOutlineSearch,
 } from "react-icons/hi";
 import { FaMapLocationDot } from "react-icons/fa6";
+import CategorySection from "./Category/CategorySection";
 
 function Home() {
   const cuisines = [
@@ -69,7 +74,6 @@ function Home() {
       prevSlide(); // Swipe right for the previous slide
     }
   };
-
   return (
     <>
       <div className="bg-white">
@@ -141,7 +145,7 @@ function Home() {
           <section className="p-3">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-xl font-semibold text-purple-600">
-                Popular Cuisines
+                Popular Category
               </h2>
               <Link
                 to=""
@@ -150,24 +154,9 @@ function Home() {
                 See All
               </Link>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {cuisines.map((cuisine, index) => (
-                <Link
-                  to={`/cuisine/${cuisine.name}`}
-                  key={index}
-                  className="flex flex-col items-center"
-                >
-                  <img
-                    src={cuisine.img}
-                    alt={cuisine.name}
-                    className="w-14 h-14 sm:w-20 sm:h-20 rounded-full shadow-md object-cover"
-                  />
-                  <span className="mt-2 text-sm sm:text-base font-medium text-gray-700">
-                    {cuisine.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
+
+            <CategorySection />
+
           </section>
         </div>
 

@@ -16,6 +16,9 @@ import AddressCarousel from "./address/AddressCarousel";
 const CheckoutPage = () => {
   const location = useLocation();
 
+  // place holder loading
+  const [placeHolderLoading, setPlaceHolderLoading] = useState(null);
+
   const [deliveryCharge, setDeliveryCharge] = useState(null); // Delivery charge
 
   // socket io
@@ -230,6 +233,7 @@ const CheckoutPage = () => {
       toast.error("please select delivery location");
       return;
     }
+
     // Check if payment method is Bkash
     if (paymentMethod === "Bkash") {
       try {
@@ -263,7 +267,8 @@ const CheckoutPage = () => {
         console.error("Bkash payment error:", error); // Log error for debugging
         toast.error("Something went wrong with Bkash payment."); // Show error to user
       } finally {
-        setIsProcessing(false); // Stop processing state
+        setIsProcessing(false);
+        setPlaceHolderLoading(false); // Stop processing state
       }
     } else {
       placeOrder(); // Place order directly for other methods
@@ -274,6 +279,7 @@ const CheckoutPage = () => {
   const placeOrder = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     setIsProcessing(true);
+    setPlaceHolderLoading(true);
     try {
       const orderData = {
         tip: tip,
@@ -314,8 +320,7 @@ const CheckoutPage = () => {
         toast.success("Order placed successfully!");
         localStorage.setItem("cartRest", "");
         setCart([]);
-        //  socket.emit("sendOrderToRider", response.data.order);
-        // socket.emit("sendOrderToRestaurant", response.data);
+        setPlaceHolderLoading(false);
       } else {
         toast.error("Failed to place order.");
       }
@@ -568,9 +573,14 @@ const CheckoutPage = () => {
             /> */}
             <button
               onClick={handlePlaceOrder}
-              className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold"
+              disabled={placeHolderLoading}
+              className="w-full disabled:bg-gray-500 disabled:cursor-not-allowed py-2 bg-blue-600 text-white rounded-lg font-bold"
             >
-              Place order
+              {placeHolderLoading ? (
+                <h1>Loading....</h1>
+              ) : (
+                <span>Place order</span>
+              )}
             </button>
             <button
               onClick={() => setPlaceOrderConfirmation(false)}
