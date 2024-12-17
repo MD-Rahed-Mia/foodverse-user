@@ -12,7 +12,7 @@ function Restaurant() {
       setLoading(true);
       const result = await handleApiRequest("/restaurant");
 
-     // console.log(result);
+      console.log(result);
 
       if (result?.success) {
         setAllRestaurants(result);

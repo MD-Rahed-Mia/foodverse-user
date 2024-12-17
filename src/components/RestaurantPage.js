@@ -30,7 +30,7 @@ const RestaurantPage = () => {
 
         const result = await apiResponse.json();
 
-        //   console.log(result);
+           console.log(result);
 
         if (result) {
           setLoading(false);
