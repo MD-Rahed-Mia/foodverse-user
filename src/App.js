@@ -47,6 +47,7 @@ import LiveChatWithRestaurant from "./components/LiveChat";
 import LiveChatWithRider from "./components/LiveChatWithRider.jsx";
 import MessageToast from "./components/toast/MessageToast.jsx";
 import OrderToast from "./components/toast/OrderToast.jsx";
+import Categories from "./components/Categories.js";
 
 function App() {
   const socket = useSocket();
@@ -172,6 +173,16 @@ function App() {
                 element={
                   <>
                     <Header title="category" /> <CategoryFilter />
+                    <Footer />
+                  </>
+                }
+              />
+
+              <Route
+                path="/category"
+                element={
+                  <>
+                    <Header title="category" /> <Categories />
                     <Footer />
                   </>
                 }

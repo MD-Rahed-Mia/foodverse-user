@@ -148,7 +148,7 @@ function Home() {
                 Popular Category
               </h2>
               <Link
-                to=""
+                to="/category"
                 className="text-blue-600 font-semibold hover:underline"
               >
                 See All
@@ -156,7 +156,6 @@ function Home() {
             </div>
 
             <CategorySection />
-
           </section>
         </div>
 

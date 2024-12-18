@@ -142,7 +142,6 @@ function Cart() {
             </div>
 
             <div className="flex items-center gap-4 flex-nowrap w-full overflow-x-scroll">
-
               {alsoLike &&
                 alsoLike.map((item) => (
                   <YouMayAlsoLikeCard key={item._id} detail={item} />
@@ -200,7 +199,7 @@ function Cart() {
             <p className="text-gray-600 mb-6">Please add items to the menu.</p>
 
             <Link
-              to="/Favorites"
+              to="/restaurant"
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Browse

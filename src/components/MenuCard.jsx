@@ -41,7 +41,7 @@ export default function MenuCard({ detail }) {
   return (
     <>
       <div
-        className="bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transitioncursor-pointer relative "
+        className="bg-white w-full rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transitioncursor-pointer relative "
         onClick={handleCardClick}
       >
         <img

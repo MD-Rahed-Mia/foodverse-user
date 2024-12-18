@@ -81,7 +81,7 @@ function SetAddressManager() {
         }
         setNewAddress((prev) => ({
           ...prev,
-          label: "out_of_zone", // Custom label for feedback
+          label: "home", // Custom label for feedback
         }));
       } else {
         setNewAddress((prev) => ({

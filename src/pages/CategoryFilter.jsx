@@ -37,7 +37,7 @@ export default function CategoryFilter() {
         ) : null}
       </div>
 
-      <div className="max-w-[80%] mx-auto flex items-center justify-center gap-8">
+      <div className="w-[95%] mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items &&
           items.map((item) => {
             return <MenuCard detail={item} key={item._id} />;

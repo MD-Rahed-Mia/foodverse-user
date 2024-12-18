@@ -15,19 +15,35 @@ export default function OrderToast() {
         //  console.log(parseData);
 
         // setMessage(parseData);
+        setMessage(`user order has been pickup.`)
         setIsActive(true);
       });
     }
 
+    // drop notification from rider
     if (socket) {
       socket.on("sendDropResponseToUser", (data) => {
         console.log(data);
 
-        setMessage("Parcel has been pickup by rider.");
+       // setMessage("Parcel has been pickup by rider.");
         // const parseData = JSON.parse(data);
 
         // setMessage(parseData);
         setMessage("Order has been delivered.");
+        setIsActive(true);
+      });
+    }
+
+    // drop notification from rider
+    if (socket) {
+      socket.on("notifyParcelIsReadyForPickupFromServer", (data) => {
+        console.log(data);
+
+        setMessage("Your parcel is ready for pickup.");
+        // const parseData = JSON.parse(data);
+
+        // setMessage(parseData);
+      //  setMessage("Order has been delivered.");
         setIsActive(true);
       });
     }
@@ -41,7 +57,7 @@ export default function OrderToast() {
     <>
       {isActive ? (
         <div className="fixed top-40 right-4 z-50" onClick={handleClose}>
-          <div className="flex items-center bg-white border shadow-lg px-4 py-2 rounded-tl-full rounded-bl-full ">
+          <div className="flex items-center bg-red-500 min-h-12 w-[200px]  shadow-lg px-4 py-2 rounded-tl-full rounded-bl-full ">
             <Link className="flex-1">
               <span className="font-bold">{message}</span>
             </Link>
