@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 export default function AddressCarousel({
   addressList,
@@ -7,36 +10,30 @@ export default function AddressCarousel({
   setSelectedNumber,
   setAddressLabel,
 }) {
-  // State to track the selected address key
   const [selectedKey, setSelectedKey] = useState(null);
-
-  // console.log(addressList)
 
   return (
     <div>
-      <h1 className="font-semibold text-lg">Select delivery address</h1>
+      <h1 className="font-semibold text-lg mb-4">Select delivery address</h1>
       <Swiper
-        navigation
-        pagination={{ clickable: true }}
-        spaceBetween={50}
         slidesPerView={1}
-        onSlideChange={() => console.log("slide change")}
-        onSwiper={(swiper) => console.log(swiper)}
+        pagination={{ clickable: true }}
+        parallax
       >
         {Object.entries(addressList).map(([key, value]) => {
           const isSelected = selectedKey === key;
 
           return value.address !== undefined ? (
             <SwiperSlide
-              className={`cursor-pointer rounded-md   px-2 py-3 ${
-                isSelected
-                  ? "border-2 rounded-md  h-full border-blue-500"
-                  : " rounded-md border"
-              }`}
               key={key}
+              className={`cursor-pointer rounded-md px-2 py-3 ${
+                isSelected
+                  ? "border-2 border-blue-500"
+                  : "border border-gray-300"
+              }`}
               onClick={() => {
                 setSelectedAddress(value.address);
-                setSelectedKey(key); // Set the selected key
+                setSelectedKey(key);
                 setSelectedNumber(value.phoneNumber);
                 setAddressLabel(value.label);
               }}

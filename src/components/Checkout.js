@@ -19,7 +19,7 @@ const CheckoutPage = () => {
   // place holder loading
   const [placeHolderLoading, setPlaceHolderLoading] = useState(null);
 
-  const [deliveryCharge, setDeliveryCharge] = useState(null); // Delivery charge
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
 
   // socket io
   const socket = useSocket();
@@ -442,8 +442,8 @@ const CheckoutPage = () => {
           </section>
         ) : (
           <section className="text-center">
-            {deliveryCharge !== null ? (
-              <p>Delivery Charge: {deliveryCharge.toFixed(2)} TK</p>
+            {deliveryCharge !== 0 ? (
+              <p>Delivery Charge: {deliveryCharge.toFixed()} TK</p>
             ) : (
               <h1>Please select delivery address to see delivery charge.</h1>
             )}
@@ -529,7 +529,7 @@ const CheckoutPage = () => {
           </div>
           <div className="flex justify-between py-2">
             <p className="text-gray-700">Delivery Charge</p>
-            <p>TK {deliveryCharge}</p>
+            <p>TK {deliveryCharge.toFixed()}</p>
           </div>
 
           <div className="flex justify-between py-2">
@@ -544,18 +544,21 @@ const CheckoutPage = () => {
           <p>Total</p>
           <div className="flex items-center">
             <GiTakeMyMoney className="size-6 text-purple-600 mx-1" />
-            <p>TK {cartTotal + tip + deliveryCharge - discount}</p>
+            <p>TK {(cartTotal + tip + deliveryCharge - discount).toFixed()}</p>
           </div>
         </div>
         <button
           className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold"
+          disabled={deliveryChargeLoading}
           onClick={
             paymentMethod === "Bkash"
               ? () => setShowBkashModal(true)
               : () => setPlaceOrderConfirmation(true)
           }
         >
-          Confirm Order
+          {deliveryChargeLoading
+            ? "Loading... Delivery Charge..."
+            : "Confirm Order"}
         </button>
       </section>
 
