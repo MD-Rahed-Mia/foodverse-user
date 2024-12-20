@@ -19,6 +19,16 @@ const CheckoutPage = () => {
   // place holder loading
   const [placeHolderLoading, setPlaceHolderLoading] = useState(null);
 
+  // drop coords
+  const [dropCoords, setDropCoords] = useState({
+    lat: 0,
+    long: 0,
+  });
+
+  // useEffect(() => {
+  //   console.log(`drop coords are : `, dropCoords);
+  // }, [dropCoords]);
+
   const [deliveryCharge, setDeliveryCharge] = useState(0);
 
   // socket io
@@ -296,6 +306,10 @@ const CheckoutPage = () => {
         addonTotal,
         customerPhone: selectedNumber,
         riderFee: riderFee,
+        coords: {
+          lat: dropCoords.lat,
+          long: dropCoords.long,
+        },
       };
 
       const response = await axios.post(
@@ -461,6 +475,7 @@ const CheckoutPage = () => {
             setSelectedAddress={setSelectedAddress}
             setSelectedNumber={setSelectedNumber}
             setAddressLabel={setAddressLabel}
+            setDropCoords={setDropCoords}
           />
         )}
 

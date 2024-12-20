@@ -9,17 +9,14 @@ export default function AddressCarousel({
   setSelectedAddress,
   setSelectedNumber,
   setAddressLabel,
+  setDropCoords,
 }) {
   const [selectedKey, setSelectedKey] = useState(null);
 
   return (
     <div>
       <h1 className="font-semibold text-lg mb-4">Select delivery address</h1>
-      <Swiper
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-        parallax
-      >
+      <Swiper slidesPerView={1} pagination={{ clickable: true }} parallax>
         {Object.entries(addressList).map(([key, value]) => {
           const isSelected = selectedKey === key;
 
@@ -36,6 +33,10 @@ export default function AddressCarousel({
                 setSelectedKey(key);
                 setSelectedNumber(value.phoneNumber);
                 setAddressLabel(value.label);
+                setDropCoords({
+                  lat: value.latitude,
+                  long: value.longitude,
+                });
               }}
             >
               <div>
