@@ -31,7 +31,14 @@ const RestaurantPage = () => {
 
         const result = await apiResponse.json();
 
-        console.log(result);
+        // console.log(result);
+
+        if (apiResponse.status === 404) {
+          setMenu([]);
+          setLoading(false);
+          setRestaurant(result?.restaurant);
+          return;
+        }
 
         if (result) {
           setLoading(false);
@@ -41,11 +48,17 @@ const RestaurantPage = () => {
       } catch (error) {
         //   console.log(error);
         setLoading(false);
+
+        // console.log(error.response);
       }
     }
 
     fetchUserInformation();
   }, []);
+
+  useEffect(() => {
+    console.log(menu);
+  }, [menu]);
 
   return (
     <div className="bg-gradient-to-r from-purple-200 to-blue-200 min-h-screen ">
