@@ -35,6 +35,10 @@ function SetAddressManager() {
     phoneNumber: "",
     address: "",
   });
+
+  const [isZone, setIsZone] = useState(null);
+
+  const [isToastShow, setIsToastShow] = useState(false);
   const mapRef = useRef(null);
 
   const mapStyles = {
@@ -42,13 +46,22 @@ function SetAddressManager() {
     width: "100%",
   };
 
-  const onLoad = (mapInstance) => {
-    mapRef.current = mapInstance;
-    addCenterMarker();
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      toast.error("Geolocation not found. Please try again.");
+    }
   };
 
-  // toast flag
-  const [isToastShow, setIsToastShow] = useState(false);
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   const handleMapIdle = () => {
     if (mapRef.current) {
@@ -58,14 +71,13 @@ function SetAddressManager() {
         lng: parseFloat(center.lng().toFixed(6)),
       };
 
-      // Update both coordinates state and newAddress
       setCoordinates(updatedCoordinates);
       setNewAddress((prev) => ({
         ...prev,
         latitude: updatedCoordinates.lat,
         longitude: updatedCoordinates.lng,
       }));
-      // Validate delivery zone
+
       const distance = calculateDistance(
         updatedCoordinates.lat,
         updatedCoordinates.lng,
@@ -75,21 +87,20 @@ function SetAddressManager() {
 
       if (distance > 5500) {
         if (!isToastShow) {
-          // Optional: Disable the submit button
-          toast.error("out of zone. currently our service is not available.");
+          toast.error("Out of zone. Currently, our service is not available.");
           setIsToastShow(true);
+          setIsZone(false);
         }
-        setNewAddress((prev) => ({
-          ...prev,
-          label: "home", // Custom label for feedback
-        }));
       } else {
-        setNewAddress((prev) => ({
-          ...prev,
-          
-        }));
+        setIsToastShow(false);
+        setIsZone(true);
       }
     }
+  };
+
+  const onLoad = (mapInstance) => {
+    mapRef.current = mapInstance;
+    addCenterMarker(); // Ensure the marker is added when the map loads
   };
 
   const addCenterMarker = () => {
@@ -99,7 +110,11 @@ function SetAddressManager() {
       return;
     }
 
+    const existingMarker = document.getElementById("center-marker");
+    if (existingMarker) existingMarker.remove(); // Prevent duplicates
+
     const centerMarker = document.createElement("div");
+    centerMarker.id = "center-marker";
     centerMarker.style.background = 'url("/img/Location.png") no-repeat center';
     centerMarker.style.backgroundSize = "contain";
     centerMarker.style.height = "80px";
@@ -109,7 +124,12 @@ function SetAddressManager() {
     centerMarker.style.left = "50%";
     centerMarker.style.marginTop = "-40px";
     centerMarker.style.marginLeft = "-40px";
-    document.getElementById("map").appendChild(centerMarker);
+    mapContainer.appendChild(centerMarker);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress((prev) => ({ ...prev, [name]: value }));
   };
 
   const findLocation = (event) => {
@@ -133,14 +153,8 @@ function SetAddressManager() {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewAddress((prev) => ({ ...prev, [name]: value }));
-  };
-
   const updateUserAddress = async () => {
     try {
-      console.log("Sending data to backend:", newAddress); // Add this line
       const userId = JSON.parse(localStorage.getItem("user"))?.id;
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/user/update-address?id=${userId}`,
@@ -161,11 +175,6 @@ function SetAddressManager() {
       console.error("Error updating address:", error);
     }
   };
-
-  useEffect(() => {
-    // Ensure to initialize the map when component mounts
-    window.onload = addCenterMarker;
-  }, []);
 
   return (
     <div className="max-w-lg mx-auto bg-white p-4 rounded-lg shadow-lg ">
@@ -285,16 +294,14 @@ function SetAddressManager() {
         </div>
         <button
           type="submit"
-          disabled={newAddress.label === "out_of_zone"}
+          disabled={isZone ? false : true}
           className={`${
-            newAddress.label === "out_of_zone"
+            newAddress.label === ""
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-600"
-          } text-white text-lg font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
+          } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
         >
-          {newAddress.label === "out_of_zone"
-            ? "Service Not Available"
-            : "Submit"}
+          {!isZone ? "Service Not Available" : "Submit"}
         </button>
       </form>
     </div>

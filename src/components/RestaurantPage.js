@@ -4,6 +4,7 @@ import MenuCard from "./MenuCard";
 import { useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
+import NotFound from "./not-found/NotFound";
 
 const RestaurantPage = () => {
   const [menu, setMenu] = useState(null);
@@ -30,7 +31,7 @@ const RestaurantPage = () => {
 
         const result = await apiResponse.json();
 
-           console.log(result);
+        console.log(result);
 
         if (result) {
           setLoading(false);
@@ -132,6 +133,9 @@ const RestaurantPage = () => {
                 />
               ))}
           </div>
+
+          {/* no items */}
+          <div>{menu?.length === 0 ? <NotFound /> : null}</div>
         </section>
       </div>
     </div>

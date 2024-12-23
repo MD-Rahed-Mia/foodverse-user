@@ -5,12 +5,22 @@ import { HiPlus } from "react-icons/hi";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FiMinus } from "react-icons/fi";
 import { FaGift } from "react-icons/fa6";
+import { toast } from "react-hot-toast";
 
 export default function MenuCard({ detail }) {
   const [showModal, setShowModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [addons, setAddons] = useState(detail?.addons);
   const [addonValue, setAddonValue] = useState(0);
+
+  // isopen
+  const [isOpen, setIsOpen] = useState(null);
+
+  useEffect(() => {
+    const is = detail?.restaurantId.isOpen;
+    setIsOpen(is);
+    // console.log(`is open is : ${is}`);
+  }, [detail]);
 
   const [addonList, setAddonList] = useState([]);
 
@@ -22,6 +32,10 @@ export default function MenuCard({ detail }) {
     console.log(`items is clicked: `);
   }
 
+  useEffect(() => {
+    console.log(`is open is : `, isOpen);
+  }, [isOpen]);
+
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
   useEffect(() => {
@@ -31,6 +45,10 @@ export default function MenuCard({ detail }) {
   const { handleAddToCart } = useCartContext();
 
   const handleCardClick = () => {
+    if (!isOpen) {
+      toast.error("currently restaurant is closed.");
+      return;
+    }
     setShowModal(true);
   };
 
@@ -44,6 +62,10 @@ export default function MenuCard({ detail }) {
         className="bg-white w-full rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transitioncursor-pointer relative "
         onClick={handleCardClick}
       >
+        {/* is open text */}
+        <h1 className="absolute top-3 right-2 px-4 py-1 rounded-full bg-red-500 text-white">
+          {isOpen ? "" : "closed"}
+        </h1>
         <img
           src={detail?.image || "/img/burger.png"}
           alt={detail?.name}

@@ -62,7 +62,7 @@ function RestaurantCard({ detail }) {
       }`}
     >
       {isOpen ? (
-        <Link to={`/restaurant/${detail._id}`}>
+        <Link to={`/restaurant/${detail._id}&is_open=${isOpen}`}>
           <img
             src={detail.image || "/img/default_rest_image.webp"}
             alt="restaurant"
