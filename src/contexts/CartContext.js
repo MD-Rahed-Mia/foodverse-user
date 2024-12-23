@@ -59,13 +59,37 @@ const CartProvider = ({ children }) => {
     // console.log(isExist);
 
     // Check if the cart already has items from a different restaurant
-    if (existingRestaurant && existingRestaurant !== item.restaurantId) {
-      toast.error("You already cart another restaurant item.");
+    if (existingRestaurant && existingRestaurant !== item.restaurantId._id) {
+      toast((t) => (
+        <span className="shadow-lg border py-3 px-1">
+          You have already another restaurant items in your cart.
+          <button
+            className="bg-red-400 px-2 py-1 rounded-md text-white"
+            onClick={() => {
+              localStorage.setItem("cart", JSON.stringify([]));
+              localStorage.setItem("cartRest", "");
+              setCart([]);
+              localStorage.setItem("cartRest", item.restaurantId._id);
+              setCart((prev) => [...prev, item]);
+              toast.success("Item add to cart.");
+              toast.dismiss(t.id);
+            }}
+          >
+            Reset Cart & Add Item?
+          </button>
+          <button
+            className="bg-red-600 text-white block px-3 py-1 rounded-md"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Close
+          </button>
+        </span>
+      ));
       return false;
     }
 
     // If it's the first item or from the same restaurant
-    localStorage.setItem("cartRest", item.restaurantId);
+    localStorage.setItem("cartRest", item.restaurantId._id);
     setCart((prev) => [...prev, item]);
 
     toast.success("Item add to cart.");

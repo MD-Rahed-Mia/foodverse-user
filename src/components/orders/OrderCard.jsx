@@ -16,6 +16,19 @@ export default function OrderCard({ detail }) {
   const [addons, setAddons] = useState([]);
   const [isChatboxOpen, setIsChatBoxOpen] = useState(false);
   const [riderChatBoxOpen, setRiderChatBoxOpen] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  // update total amount
+  useEffect(() => {
+    const total = detail?.items.reduce((sum, currentItem) => {
+      return (sum += currentItem.quantity * currentItem.offerPrice);
+    }, 0);
+
+    setTotalAmount(total + Number(detail?.addonTotal));
+
+    // log detail
+    console.log(`details for menu : `, detail);
+  }, [detail]);
 
   const socket = useSocket();
 
@@ -179,13 +192,26 @@ export default function OrderCard({ detail }) {
       </div>
 
       <h1>
-        Total Amount- <span>BDT 240</span>
+        Total Amount- <span>BDT {totalAmount.toFixed()}</span>
       </h1>
       <h1>
-        Discount- <span>BDT 20</span>
+        Discount- <span>BDT {detail.discount}</span>
       </h1>
       <h1>
-        Payable- <span>BDT 220</span>
+        Delivery charge- <span>BDT {detail.deliveryAmount}</span>
+      </h1>
+      <h1>
+        Tip- <span>BDT {detail.tip}</span>
+      </h1>
+      <h1>
+        Payable-{" "}
+        <span className="text-2xl font-semibold">
+          BDT{" "}
+          {totalAmount.toFixed() -
+            Number(detail.discount) +
+            Number(detail.deliveryAmount) +
+            Number(detail.tip)}
+        </span>
       </h1>
       {/* <div>
         <BsChatSquareText
@@ -226,7 +252,7 @@ export default function OrderCard({ detail }) {
         Chat with restaurant
       </Link> */}
       {detail.status === "accept by restaurant" ||
-      detail.status === "ready for pickup"  ||
+      detail.status === "ready for pickup" ||
       detail.status === "accept by rider" ? (
         <Link
           to={`/live-chat-restaurant/${detail.restaurantId}/${detail._id}`}
@@ -236,8 +262,7 @@ export default function OrderCard({ detail }) {
         </Link>
       ) : null}
 
-      {detail.status === "picked up" ||
-      detail.status === "ready for pickup" ? (
+      {detail.status === "picked up" || detail.status === "ready for pickup" ? (
         <Link
           to={`/live-chat-rider/${detail.riderId}/${detail._id}`}
           className="flex items-center justify-center gap-2 absolute top-8 right-3 shadow-md border p-1 text-lg bg-white cursor-pointer"

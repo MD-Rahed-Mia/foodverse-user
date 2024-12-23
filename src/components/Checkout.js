@@ -12,6 +12,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Cookies from "js-cookie";
 import Loading from "./Loading";
 import AddressCarousel from "./address/AddressCarousel";
+import AsapCalculator from "./calc-function/AsapCalculator";
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -100,6 +101,9 @@ const CheckoutPage = () => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
+
+  // distance
+  const [distance, setDistance] = useState(0);
   useEffect(() => {
     async function fetchAndCalculate() {
       setDeliveryChargeLoading(true);
@@ -144,18 +148,7 @@ const CheckoutPage = () => {
           parseFloat(coordinator.longitude)
         );
 
-        // console.log(`Result is: ${result}`);
-        // console.log(`Delivery charge is 15TK per km: ${result * 15}`);
-
-        // if (result <= 1) {
-        //   setDeliveryChargeLoading(false);
-        //   setDeliveryCharge(25);
-        // } else {
-        //   const charge = result * 25;
-        //   console.log(`charge is ${charge}`);
-        //   setDeliveryCharge(charge);
-        //   setDeliveryChargeLoading(false);
-        // }
+        setDistance(result);
 
         const firstKm = chargeList?.userFirstKMCharge;
 
@@ -441,10 +434,11 @@ const CheckoutPage = () => {
         {/* Delivery Section */}
         <section className="space-y-2 border rounded-sectionmd py-2">
           <h2 className="text-xl font-bold text-center">Estimated Delivery</h2>
-          <div className="flex item-center justify-center">
+          {/* <div className="flex item-center justify-center">
             <MdDeliveryDining className="size-6 mx-1 text-purple-600" />
             <p className="text-center text-blue-600 font-bold">Asap (33 min)</p>
-          </div>
+          </div> */}
+          <AsapCalculator distance={distance} />
         </section>
         {/* Delivery fee */}
 
@@ -483,11 +477,11 @@ const CheckoutPage = () => {
         <section className="space-y-2">
           <h3 className="text-lg font-semibold">Tip your rider</h3>
           <div className="flex justify-between">
-            {[0, 10, 20, 30, 50].map((amount) => (
+            {[0, 10, 20, 30, 50, 100].map((amount) => (
               <button
                 key={amount}
                 onClick={() => handleTipChange(amount)}
-                className={`px-2 py-1 border rounded-md ${
+                className={`px-2 py-1 text-sm border rounded-md ${
                   tip === amount
                     ? "bg-blue-600 text-white"
                     : "bg-gray-100 text-gray-700"
@@ -496,6 +490,15 @@ const CheckoutPage = () => {
                 TK {amount}
               </button>
             ))}
+            <input
+              type="number"
+              placeholder="0"
+              min={0}
+              className={`max-w-[60px]  appearance-none border rounded-md text-sm px-2 py-1 bg-gray-100`}
+              onChange={(e) => {
+                handleTipChange(Number(e.target.value));
+              }}
+            />
           </div>
         </section>
 
@@ -504,7 +507,11 @@ const CheckoutPage = () => {
           <h3 className="text-lg font-semibold">Payment Method</h3>
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="flex items-center">
-              <GiTakeMyMoney className="size-6 text-purple-600" />
+              {paymentMethod === "Cash on Delivery" ? (
+                <GiTakeMyMoney className="size-6 text-purple-600" />
+              ) : (
+                <img src="/img/bkash.webp" className="max-w-12" alt="bkash" />
+              )}
               <p className="ml-2 font-bold">{paymentMethod}</p>
             </div>
             <button

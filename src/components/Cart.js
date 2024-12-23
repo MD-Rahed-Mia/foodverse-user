@@ -45,7 +45,7 @@ function Cart() {
           `${api_path_url}/menu/you-may-like?restaurant-id=${cartRest}`,
           {
             method: "POST",
-            headers: {
+            headers: { 
               "x-auth-token": authToken,
               "Content-Type": "application/json",
             },
