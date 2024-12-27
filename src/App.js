@@ -48,6 +48,7 @@ import LiveChatWithRider from "./components/LiveChatWithRider.jsx";
 import MessageToast from "./components/toast/MessageToast.jsx";
 import OrderToast from "./components/toast/OrderToast.jsx";
 import Categories from "./components/Categories.js";
+import ToasterNotifation from "./components/notification/NotificationCard.jsx";
 
 function App() {
   const socket = useSocket();
@@ -56,7 +57,7 @@ function App() {
     if (socket) {
       const id = Cookies.get("id");
       socket.emit("auth", id);
-      console.log("socket is connected : ", socket.id);
+      console.log(socket);
     }
   }, [socket]);
 
@@ -111,7 +112,10 @@ function App() {
             <MessageToast />
 
             {/* order taost */}
-            <OrderToast />
+            {/* <OrderToast /> */}
+
+            {/* Notification */}
+            <ToasterNotifation />
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />

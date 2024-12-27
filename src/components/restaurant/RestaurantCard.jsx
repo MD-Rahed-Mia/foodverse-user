@@ -7,6 +7,8 @@ import { toast } from "react-hot-toast";
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);
 
+
+
   useEffect(() => {
     if (detail) {
       try {
@@ -89,6 +91,14 @@ function RestaurantCard({ detail }) {
                 {detail.averageReview}
               </p>
             </div>
+          </div>
+
+          <div>
+            {!detail.isOpen ? (
+              <div className="bg-red-500 px-8 py-2 rounded-full text-white absolute top-1/4 right-4">
+                <h1>Closed</h1>
+              </div>
+            ) : null}
           </div>
         </div>
       </Link>

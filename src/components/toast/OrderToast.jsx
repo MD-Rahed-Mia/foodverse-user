@@ -15,7 +15,7 @@ export default function OrderToast() {
         //  console.log(parseData);
 
         // setMessage(parseData);
-        setMessage(`user order has been pickup.`)
+        setMessage(`user order has been pickup.`);
         setIsActive(true);
       });
     }
@@ -25,7 +25,7 @@ export default function OrderToast() {
       socket.on("sendDropResponseToUser", (data) => {
         console.log(data);
 
-       // setMessage("Parcel has been pickup by rider.");
+        // setMessage("Parcel has been pickup by rider.");
         // const parseData = JSON.parse(data);
 
         // setMessage(parseData);
@@ -43,7 +43,7 @@ export default function OrderToast() {
         // const parseData = JSON.parse(data);
 
         // setMessage(parseData);
-      //  setMessage("Order has been delivered.");
+        //  setMessage("Order has been delivered.");
         setIsActive(true);
       });
     }

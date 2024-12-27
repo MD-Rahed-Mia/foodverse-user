@@ -12,18 +12,9 @@ import {
 } from "react-icons/hi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import CategorySection from "./Category/CategorySection";
+import HomeAddress from "./address/HomeAddress";
 
 function Home() {
-  const cuisines = [
-    { name: "Biryani", img: "./img/biryani.jpg" },
-    { name: "Burger", img: "./img/burgerR.png" },
-    { name: "Pizza", img: "./img/pizza.png" },
-    { name: "Chicken", img: "./img/KPC.jpg" },
-    { name: "Bengali", img: "./img/bangali.jpg" },
-    { name: "Japanese", img: "./img/sandwich.jpg" },
-    { name: "Burger", img: "./img/burgerR.png" },
-    { name: "Burger", img: "./img/burgerR.png" },
-  ];
 
   const ads = [
     { src: "./img/Add1.jpg", alt: "Ad 1" },
@@ -80,18 +71,8 @@ function Home() {
         {/* Header section */}
         <div className="bg-red-500 w-full fixed z-10">
           <header className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 pb-8 px-4 flex items-center justify-between">
-            <Link to="/AddressManager">
-              <div className="flex items-center">
-                {/* Location Icon */}
-                <HiLocationMarker className="size-6 text-white" />
-                <div className="ml-2 text-white text-sm">
-                  <span className="block">
-                    {/* {userAddress && userAddress.address ? userAddress.address :*/}{" "}
-                    Location not set{" "}
-                  </span>
-                </div>
-              </div>
-            </Link>
+            
+          <HomeAddress />
             {/* Notification Icon */}
             <div>
               <Link to="/notification/all">
