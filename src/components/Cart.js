@@ -199,7 +199,7 @@ function Cart() {
             <p className="text-gray-600 mb-6">Please add items to the menu.</p>
 
             <Link
-              to="/restaurant"
+              to="/list-restaurant"
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Browse

@@ -152,7 +152,7 @@ function App() {
               />
 
               <Route
-                path="/restaurant"
+                path="/list-restaurant"
                 element={
                   <>
                     <Header title={"Restaurant"} />
@@ -246,7 +246,7 @@ function App() {
                 element={<PrivateRoute element={SearchBar} />}
               />
               <Route
-                path="/restaurant/:restaurantId"
+                path="/list-restaurant/:restaurantId"
                 element={<PrivateRoute element={RestaurantPage} />}
               />
               <Route

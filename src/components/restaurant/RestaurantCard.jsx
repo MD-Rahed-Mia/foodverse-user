@@ -63,7 +63,7 @@ function RestaurantCard({ detail }) {
         isOpen ? "cursor-pointer" : "cursor-not-allowed"
       }`}
     >
-      <Link to={`/restaurant/${detail._id}&is_open=${isOpen}`}>
+      <Link to={`/list-restaurant/${detail._id}&is_open=${isOpen}`}>
         <img
           src={detail.image || "/img/default_rest_image.webp"}
           alt="restaurant"
