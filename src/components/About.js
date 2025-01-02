@@ -183,9 +183,9 @@ const Profile = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <Link to="/DeliverymanRegistration">
+              <a href="https://restaurant.foodversedelivery.com/register" target="_blank" rel="noreferrer">
                 <span className="px-1">Join as a Delivery Man</span>
-              </Link>
+              </a>
             </li>
             <li className="flex items-center p-2 rounded-lg hover:bg-gray-200">
               <svg

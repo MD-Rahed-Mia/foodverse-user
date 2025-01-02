@@ -13,6 +13,8 @@ import {
 import { FaMapLocationDot } from "react-icons/fa6";
 import CategorySection from "./Category/CategorySection";
 import HomeAddress from "./address/HomeAddress";
+import PopularItems from "./home/PopularItems";
+import NearByFoods from "./home/NearByFoods";
 
 function Home() {
 
@@ -140,11 +142,10 @@ function Home() {
           </section>
         </div>
 
-        <div className="mt-5"></div>
 
         <div>
           {/* Homw Empty Massage */}
-          <section className="flex items-center justify-center min-h-screen bg-white">
+          <section className="flex items-center justify-center  bg-white">
             <div className="text-center">
               <div className="flex justify-center mb-4">
                 <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-6 rounded-full">
@@ -169,6 +170,20 @@ function Home() {
             </div>
           </section>
         </div>
+
+        {/* popular items */}
+
+        <div className="w-full my-8 mb-8">
+          <h1 className="text-lg my-3 px-4 font-semibold">Popular Items</h1>
+          <PopularItems />
+        </div>
+
+        <div className="w-full my-8 mb-8">
+          <h1 className="text-lg my-3 px-4 font-semibold">Near by foods</h1>
+          <NearByFoods />
+        </div>
+
+        <div className="py-6"></div>
 
         <Footer />
       </div>

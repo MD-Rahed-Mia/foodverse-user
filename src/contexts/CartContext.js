@@ -56,10 +56,12 @@ const CartProvider = ({ children }) => {
       return;
     }
 
-    // console.log(isExist);
+     console.log(existingRestaurant);
+
+     console.log("items restaurantId ", item.restaurantId._id);
 
     // Check if the cart already has items from a different restaurant
-    if (existingRestaurant && existingRestaurant !== item.restaurantId._id) {
+    if (existingRestaurant && existingRestaurant.toString() !== item.restaurantId._id) {
       toast((t) => (
         <span className="shadow-lg border py-3 px-1">
           You have already another restaurant items in your cart.

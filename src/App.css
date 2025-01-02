@@ -22,3 +22,12 @@
     -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
     scrollbar-width: none; /* Hide scrollbar in Firefox */
   }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 0px; /* Optionally, hide the scrollbar itself */
+    height: 0px;
+  }

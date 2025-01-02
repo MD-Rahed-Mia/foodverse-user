@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Favorites from "./components/Favorites";
@@ -49,9 +49,13 @@ import MessageToast from "./components/toast/MessageToast.jsx";
 import OrderToast from "./components/toast/OrderToast.jsx";
 import Categories from "./components/Categories.js";
 import ToasterNotifation from "./components/notification/NotificationCard.jsx";
+import FloatingAddressList from "./components/address/FloatingAddressList.jsx";
 
 function App() {
   const socket = useSocket();
+
+  // address selecting card
+  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
     if (socket) {
@@ -65,6 +69,8 @@ function App() {
     <AuthProvider>
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
+
+      <FloatingAddressList isActive={isActive} setIsActive={setIsActive}/>
 
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
@@ -106,6 +112,8 @@ function App() {
       </Helmet>
 
       <CartProvider>
+
+        
         <Router>
           <div className="App">
             {/* message toast */}

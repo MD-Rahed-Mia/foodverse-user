@@ -26,7 +26,7 @@ function Favorites() {
           <p className="text-gray-600 mb-6">Save it to save your time.</p>
 
           {/* Browse Button */}
-          <Link to='/restaurant' >
+          <Link to='/list-restaurant' >
             <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300 hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-700">
               See Restaurant
             </button>

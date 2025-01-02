@@ -13,6 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [user, setUser] = useState(null);
+  const [isFloatingAddressActive, setIsFloatingAddressActive] = useState(false);
 
   // Function to log in the user and store the token in localStorage
   const login = (token) => {
@@ -64,6 +65,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     user,
+    setIsFloatingAddressActive,
+    isFloatingAddressActive
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

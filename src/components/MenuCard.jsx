@@ -6,6 +6,8 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import { FiMinus } from "react-icons/fi";
 import { FaGift } from "react-icons/fa6";
 import { toast } from "react-hot-toast";
+import { api_path_url, authToken } from "../secret";
+import axios from "axios";
 
 export default function MenuCard({ detail }) {
   const [showModal, setShowModal] = useState(false);
@@ -13,11 +15,88 @@ export default function MenuCard({ detail }) {
   const [addons, setAddons] = useState(detail?.addons);
   const [addonValue, setAddonValue] = useState(0);
 
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+
+// check delivery charge
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+
+async function calcdeliveryCharge (){
+  const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
+
+  if(cood){
+    const result = calculateDistance(cood.lat, cood.long, detail?.restaurantId.coordinator.lat, detail?.restaurantId.coordinator.long);
+
+
+    try {
+      const { data } = await axios.get(
+        `${api_path_url}/charges/active-schedule`,
+        {
+          headers: {
+            "x-auth-token": authToken,
+          },
+        }
+      );
+
+      // console.log(detail.restaurantId.coordinator);
+    console.log(data);
+
+    const otherKm = result - 1;
+
+  const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
+
+  if(charges < 25){
+    setDeliveryCharge(25);
+  }else {
+
+    setDeliveryCharge(charges);
+  }
+
+  // console.log(charges)
+
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+}
+
+useEffect(() => {
+  calcdeliveryCharge()
+}, [detail])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // isopen
   const [isOpen, setIsOpen] = useState(null);
 
   useEffect(() => {
-    const is = detail?.restaurantId.isOpen;
+    const is = detail?.restaurantId?.isOpen;
     setIsOpen(is);
     // console.log(`is open is : ${is}`);
   }, [detail]);
@@ -59,12 +138,12 @@ export default function MenuCard({ detail }) {
   return (
     <>
       <div
-        className="bg-white w-full rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transitioncursor-pointer relative "
+        className="bg-white w-full min-w-40 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transitioncursor-pointer relative "
         onClick={handleCardClick}
       >
         {/* is open text */}
-        <h1 className="absolute top-3 right-2 px-4 py-1 rounded-full bg-red-500 text-white">
-          {isOpen ? "" : "closed"}
+        <h1 className="absolute z-50 top-3 right-2  rounded-full bg-red-500 text-white">
+          {isOpen ? "" : "closed px-4 py-1"}
         </h1>
         <img
           src={detail?.image || "/img/burger.png"}
@@ -90,6 +169,9 @@ export default function MenuCard({ detail }) {
         <h3 className="text-sm font-semibold text-gray-800 mx-2 mt-2">
           {detail?.name}
         </h3>
+
+
+        <h1 className="text-[12px] pl-2">Delivery charge { deliveryCharge.toFixed() } </h1>
         {/*  <div>
           <span className="px-2 py-1 rounded-sm bg-orange-100 my-2 inline-block">
             {detail?.category}
@@ -137,7 +219,7 @@ export default function MenuCard({ detail }) {
             style={{ transition: "transform 0.3s ease-in-out" }}
           >
             <button
-              className="absolute top-2 right-2 text-red-600 "
+              className="absolute top-2 right-2 text-2xl text-red-600 "
               onClick={handleCloseModal}
             >
               &times;
@@ -179,6 +261,7 @@ export default function MenuCard({ detail }) {
             <div className="flex items-center justify-between mt-4 border-t-2 pt-2 ">
               <p className="font-semibold mt-2">Total Amount:</p>
               <p className="text-gray-800 font-bold">TK {price + addonValue}</p>
+
             </div>
 
             {/* addons */}
