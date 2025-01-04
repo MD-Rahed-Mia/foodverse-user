@@ -17,66 +17,66 @@ export default function MenuCard({ detail }) {
 
   const [deliveryCharge, setDeliveryCharge] = useState(0);
 
-// check delivery charge
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Earth's radius in km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
+  // check delivery charge
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
       Math.cos(lat2 * (Math.PI / 180)) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
 
 
-async function calcdeliveryCharge (){
-  const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
+  async function calcdeliveryCharge() {
+    const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
 
-  if(cood){
-    const result = calculateDistance(cood.lat, cood.long, detail?.restaurantId.coordinator.lat, detail?.restaurantId.coordinator.long);
+    if (cood) {
+      const result = calculateDistance(cood.lat, cood.long, detail?.restaurantId.coordinator.lat, detail?.restaurantId.coordinator.long);
 
 
-    try {
-      const { data } = await axios.get(
-        `${api_path_url}/charges/active-schedule`,
-        {
-          headers: {
-            "x-auth-token": authToken,
-          },
+      try {
+        const { data } = await axios.get(
+          `${api_path_url}/charges/active-schedule`,
+          {
+            headers: {
+              "x-auth-token": authToken,
+            },
+          }
+        );
+
+        // console.log(detail.restaurantId.coordinator);
+        //  console.log(data);
+
+        const otherKm = result - 1;
+
+        const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
+
+        if (charges < 25) {
+          setDeliveryCharge(25);
+        } else {
+
+          setDeliveryCharge(charges);
         }
-      );
 
-      // console.log(detail.restaurantId.coordinator);
-  //  console.log(data);
+        // console.log(charges)
 
-    const otherKm = result - 1;
 
-  const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
-
-  if(charges < 25){
-    setDeliveryCharge(25);
-  }else {
-
-    setDeliveryCharge(charges);
-  }
-
-  // console.log(charges)
-
-     
-    } catch (error) {
-      console.log(error);
+      } catch (error) {
+        console.log(error);
+      }
     }
+
   }
 
-}
-
-useEffect(() => {
-  calcdeliveryCharge()
-}, [detail])
+  useEffect(() => {
+    calcdeliveryCharge()
+  }, [detail])
 
 
 
@@ -108,7 +108,7 @@ useEffect(() => {
   // handle average food
   function handleFavouriteItems(event) {
     event.stopPropagation();
-  //  console.log(`items is clicked: `);
+    //  console.log(`items is clicked: `);
   }
 
   // useEffect(() => {
@@ -142,7 +142,7 @@ useEffect(() => {
         onClick={handleCardClick}
       >
         {/* is open text */}
-        <h1 className="absolute z-50 top-12 px-3 py-1 right-2  rounded-full bg-red-500 text-white">
+        <h1 className="absolute z-50 top-12 right-2  rounded-full bg-red-500 text-white">
           {isOpen ? "" : "closed"}
         </h1>
         <img
@@ -213,9 +213,8 @@ useEffect(() => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
           <div
-            className={`bg-white p-4 rounded-t-lg w-full transform transition-transform ${
-              showModal ? "translate-y-0" : "translate-y-full"
-            }`}
+            className={`bg-white p-4 rounded-t-lg w-full transform transition-transform ${showModal ? "translate-y-0" : "translate-y-full"
+              }`}
             style={{ transition: "transform 0.3s ease-in-out" }}
           >
             <button
@@ -360,7 +359,7 @@ const AddonItem = ({
   setAddonValue,
 }) => {
   function handleOnchange(e, item) {
-  //  console.log(e.target.checked);
+    //  console.log(e.target.checked);
 
     if (e.target.checked) {
       // If the item is selected, add it to the addonList

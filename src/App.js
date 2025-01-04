@@ -55,6 +55,8 @@ import RefundPolicy from "./components/privacy-policy/RefundPolicy.jsx";
 import CancellationPolicy from "./components/privacy-policy/CancellationPolicy.jsx";
 import ShippingPolicy from "./components/privacy-policy/ShippingPolicy.jsx";
 import HelpAndSupport from "./components/privacy-policy/HelpAndSupport.jsx";
+import SetupAddress from "./pages/SetupAddress.jsx";
+import ChangePassword from "./pages/ChangePassword.jsx";
 
 function App() {
   const socket = useSocket();
@@ -325,6 +327,20 @@ function App() {
               <Route path="/help-and-support" element={
                 <>
                   <PrivateRoute element={HelpAndSupport} />
+                  <Footer />
+                </>
+              } />
+
+              <Route path="/setup-address" element={
+                <>
+                  <PrivateRoute element={SetupAddress} />
+                  <Footer />
+                </>
+              } />
+
+              <Route path="/change-password" element={
+                <>
+                  <PrivateRoute element={ChangePassword} />
                   <Footer />
                 </>
               } />

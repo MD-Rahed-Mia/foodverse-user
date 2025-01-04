@@ -26,42 +26,46 @@ const AddressManager = () => {
   const mapStyles = { height: "300px", width: "100%" };
 
   // Fetch addresses from backend when the component mounts
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      const id = Cookies.get("id");
-      setLoading(true);
-      try {
-        if (id) {
-          const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/user/get-address?id=${id}`,
-            {
-              headers: {
-                "x-auth-token": process.env.REACT_APP_API_TOKEN,
-              },
-            }
-          );
 
-          // looping throw address
-          const address = response.data.address;
-          const arr = [];
-          // push address to address array.
-          for (const key in address) {
-            arr.push(address[key]);
+
+  const fetchAddresses = async () => {
+    const id = Cookies.get("id");
+    setLoading(true);
+    try {
+      if (id) {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/get-address?id=${id}`,
+          {
+            headers: {
+              "x-auth-token": process.env.REACT_APP_API_TOKEN,
+            },
           }
-          setAddresses(arr);
+        );
 
-          setLoading(false);
-
-          //Address save localStorage
-          if (arr.length > 0) {
-            localStorage.setItem("userAddress", JSON.stringify(arr[0]));
-          }
+        // looping throw address
+        const address = response.data.address;
+        const arr = [];
+        // push address to address array.
+        for (const key in address) {
+          arr.push(address[key]);
         }
-      } catch (error) {
+        setAddresses(arr);
+
         setLoading(false);
-        console.error("Error fetching addresses", error);
+
+        //Address save localStorage
+        if (arr.length > 0) {
+          localStorage.setItem("userAddress", JSON.stringify(arr[0]));
+        }
       }
-    };
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching addresses", error);
+    }
+  };
+
+  useEffect(() => {
+
     fetchAddresses();
   }, []);
 
@@ -211,6 +215,7 @@ const AddressManager = () => {
 
     if (data.success) {
       toast.success(data.message);
+      fetchAddresses()
     } else {
       toast.error(data.message);
     }
@@ -353,33 +358,30 @@ const AddressManager = () => {
           <div className="flex space-x-4 mb-4">
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${
-                newAddress.label === "home"
-                  ? "bg-blue-400 text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded-md ${newAddress.label === "home"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+                }`}
               onClick={() => setNewAddress({ ...newAddress, label: "home" })}
             >
               Home
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${
-                newAddress.label === "office"
-                  ? "bg-blue-400 text-white "
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded-md ${newAddress.label === "office"
+                ? "bg-blue-400 text-white "
+                : "bg-gray-200"
+                }`}
               onClick={() => setNewAddress({ ...newAddress, label: "office" })}
             >
               Office
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${
-                newAddress.label === "others"
-                  ? "bg-blue-400 text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded-md ${newAddress.label === "others"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+                }`}
               onClick={() => setNewAddress({ ...newAddress, label: "others" })}
             >
               Others

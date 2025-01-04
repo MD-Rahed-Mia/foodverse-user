@@ -190,8 +190,8 @@ const MainProfile = () => {
             <span className=" text-gray-500">{user?.email}</span>
           </div>
 
-           {/* Password */}
-           <div className="flex items-center space-x-2 rounded-lg shadow-md p-2">
+          {/* Password */}
+          <Link to={"/change-password"} className="flex items-center space-x-2 rounded-lg shadow-md p-2">
             <div className="bg-purple-100 p-2 rounded-full">
               <svg
                 className="h-6 w-6 text-purple-500"
@@ -208,9 +208,9 @@ const MainProfile = () => {
                 ></path>
               </svg>
             </div>
-            <span className="text-gray-700 font-semibold">Password</span>
-            <span className=" text-gray-500" >******</span>
-          </div>
+            <span className="text-gray-700 font-semibold">Change password</span>
+
+          </Link>
         </div>
 
         {/* Edit Profile Button */}

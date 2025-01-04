@@ -7,16 +7,21 @@ import { HiLocationMarker } from "react-icons/hi";
 import { FaLocationArrow } from "react-icons/fa";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { useAuth } from "../../contexts/AuthContext";
-
+import { useNavigate } from "react-router-dom"; // Use this hook for navigation in React Router v6
 
 export default function HomeAddress() {
   const [addressList, setAddressList] = useState(null);
   const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
+  const navigate = useNavigate(); // React Router v6's navigate hook
+
+  // Function to check if all address fields are empty
+  function checkIfAddressEmpty(address) {
+    return !address.home && !address.office && !address.others;
+  }
 
   async function getDeliveryLocationList() {
     const id = Cookies.get("id");
-
-    const label = localStorage.getItem("selectedLocation")
+    const label = localStorage.getItem("selectedLocation");
 
     try {
       const { data } = await axios.get(
@@ -28,13 +33,21 @@ export default function HomeAddress() {
         }
       );
 
-      console.log(data);
-
       if (data.success) {
-        setAddressList(data.address[label].address);
+        const addressData = data.address[label]?.address;
+
+        console.log(data)
+
+        if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
+          console.log(`currently no address setup. `);
+          navigate("/setup-address");
+        } else {
+          setAddressList(addressData)
+        }
+
       }
     } catch (error) {
-      throw new Error(error);
+      console.error(error);
     }
   }
 
@@ -55,13 +68,15 @@ export default function HomeAddress() {
 
           <div className="ml-2 text-white text-sm">
             <span className="block">
-              {/* {userAddress && userAddress.address ? userAddress.address :*/}{" "}
-              {addressList?.slice(0, 30)}{addressList?.length > 10 ? "...." : null}
+              {addressList?.slice(0, 30)}{addressList?.length > 30 ? "...." : null}
             </span>
           </div>
         </div>
       </Link>
-      <div className="flex text-lg font-bold text-white cursor-pointer items-center " onClick={() => setIsFloatingAddressActive(!isFloatingAddressActive)}>
+      <div
+        className="flex text-lg font-bold text-white cursor-pointer items-center"
+        onClick={() => setIsFloatingAddressActive(!isFloatingAddressActive)}
+      >
         <FaLocationArrow />
         <IoMdArrowDropdownCircle />
       </div>
