@@ -51,7 +51,7 @@ async function calcdeliveryCharge (){
       );
 
       // console.log(detail.restaurantId.coordinator);
-    console.log(data);
+  //  console.log(data);
 
     const otherKm = result - 1;
 
@@ -108,12 +108,12 @@ useEffect(() => {
   // handle average food
   function handleFavouriteItems(event) {
     event.stopPropagation();
-    console.log(`items is clicked: `);
+  //  console.log(`items is clicked: `);
   }
 
-  useEffect(() => {
-    console.log(`is open is : `, isOpen);
-  }, [isOpen]);
+  // useEffect(() => {
+  //   console.log(`is open is : `, isOpen);
+  // }, [isOpen]);
 
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
@@ -142,8 +142,8 @@ useEffect(() => {
         onClick={handleCardClick}
       >
         {/* is open text */}
-        <h1 className="absolute z-50 top-3 right-2  rounded-full bg-red-500 text-white">
-          {isOpen ? "" : "closed px-4 py-1"}
+        <h1 className="absolute z-50 top-12 px-3 py-1 right-2  rounded-full bg-red-500 text-white">
+          {isOpen ? "" : "closed"}
         </h1>
         <img
           src={detail?.image || "/img/burger.png"}
@@ -171,7 +171,7 @@ useEffect(() => {
         </h3>
 
 
-        <h1 className="text-[12px] pl-2">Delivery charge { deliveryCharge.toFixed() } </h1>
+        {/* <h1 className="text-[12px] pl-2">Delivery charge { deliveryCharge.toFixed() } </h1> */}
         {/*  <div>
           <span className="px-2 py-1 rounded-sm bg-orange-100 my-2 inline-block">
             {detail?.category}
@@ -360,7 +360,7 @@ const AddonItem = ({
   setAddonValue,
 }) => {
   function handleOnchange(e, item) {
-    console.log(e.target.checked);
+  //  console.log(e.target.checked);
 
     if (e.target.checked) {
       // If the item is selected, add it to the addonList

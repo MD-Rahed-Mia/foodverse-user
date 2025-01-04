@@ -23,7 +23,7 @@ export default function FloatingAddressList() {
                 }
             );
 
-            console.log("API Data:", data);
+          //  console.log("API Data:", data);
 
             if (data.success) {
                 setAddressList(data.address); // Assuming the response has this structure

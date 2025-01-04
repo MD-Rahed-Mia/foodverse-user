@@ -15,6 +15,7 @@ import CategorySection from "./Category/CategorySection";
 import HomeAddress from "./address/HomeAddress";
 import PopularItems from "./home/PopularItems";
 import NearByFoods from "./home/NearByFoods";
+import NearByRestaurant from "./home/NearByRestaurant";
 
 function Home() {
 
@@ -73,8 +74,8 @@ function Home() {
         {/* Header section */}
         <div className="bg-red-500 w-full fixed z-10">
           <header className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 pb-8 px-4 flex items-center justify-between">
-            
-          <HomeAddress />
+
+            <HomeAddress />
             {/* Notification Icon */}
             <div>
               <Link to="/notification/all">
@@ -181,6 +182,10 @@ function Home() {
         <div className="w-full my-8 mb-8">
           <h1 className="text-lg my-3 px-4 font-semibold">Near by foods</h1>
           <NearByFoods />
+        </div>
+        <div className="w-full my-8 mb-8">
+          <h1 className="text-lg my-3 px-4 font-semibold">Near by restaurant</h1>
+          <NearByRestaurant />
         </div>
 
         <div className="py-6"></div>

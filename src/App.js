@@ -50,6 +50,11 @@ import OrderToast from "./components/toast/OrderToast.jsx";
 import Categories from "./components/Categories.js";
 import ToasterNotifation from "./components/notification/NotificationCard.jsx";
 import FloatingAddressList from "./components/address/FloatingAddressList.jsx";
+import PrivacyPolicy from "./components/privacy-policy/PrivacyPolicy.jsx";
+import RefundPolicy from "./components/privacy-policy/RefundPolicy.jsx";
+import CancellationPolicy from "./components/privacy-policy/CancellationPolicy.jsx";
+import ShippingPolicy from "./components/privacy-policy/ShippingPolicy.jsx";
+import HelpAndSupport from "./components/privacy-policy/HelpAndSupport.jsx";
 
 function App() {
   const socket = useSocket();
@@ -70,7 +75,7 @@ function App() {
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
 
-      <FloatingAddressList isActive={isActive} setIsActive={setIsActive}/>
+      <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
 
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
@@ -113,7 +118,7 @@ function App() {
 
       <CartProvider>
 
-        
+
         <Router>
           <div className="App">
             {/* message toast */}
@@ -287,6 +292,44 @@ function App() {
                 path="/setaddressmanager"
                 element={<PrivateRoute element={SetAddressManager} />}
               />
+
+
+              {/* policy page */}
+              <Route path="/privacy-policy" element={
+                <>
+                  <PrivateRoute element={PrivacyPolicy} />
+                  <Footer />
+                </>
+              } />
+
+              <Route path="/refund-policy" element={
+                <>
+                  <PrivateRoute element={RefundPolicy} />
+                  <Footer />
+                </>
+              } />
+              <Route path="/cancalletion-policy" element={
+                <>
+                  <PrivateRoute element={CancellationPolicy} />
+                  <Footer />
+                </>
+              } />
+              <Route path="/shipping-policy" element={
+                <>
+                  <PrivateRoute element={ShippingPolicy} />
+                  <Footer />
+                </>
+              } />
+
+
+              <Route path="/help-and-support" element={
+                <>
+                  <PrivateRoute element={HelpAndSupport} />
+                  <Footer />
+                </>
+              } />
+
+
             </Routes>
           </div>
         </Router>

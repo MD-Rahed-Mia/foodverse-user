@@ -11,18 +11,11 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export default function HomeAddress() {
   const [addressList, setAddressList] = useState(null);
-
-
-  
-
-
   const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
-
-
 
   async function getDeliveryLocationList() {
     const id = Cookies.get("id");
-    
+
     const label = localStorage.getItem("selectedLocation")
 
     try {
@@ -63,7 +56,7 @@ export default function HomeAddress() {
           <div className="ml-2 text-white text-sm">
             <span className="block">
               {/* {userAddress && userAddress.address ? userAddress.address :*/}{" "}
-              {addressList}
+              {addressList?.slice(0, 30)}{addressList?.length > 10 ? "...." : null}
             </span>
           </div>
         </div>

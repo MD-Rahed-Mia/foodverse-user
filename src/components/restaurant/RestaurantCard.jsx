@@ -3,9 +3,73 @@ import { Link } from "react-router-dom";
 import { HiOutlineStar } from "react-icons/hi";
 import { DateTime } from "luxon";
 import { toast } from "react-hot-toast";
+import { api_path_url, authToken } from "../../secret";
+import axios from "axios";
 
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // console.log(detail)
+
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+
+  // check delivery charge
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+
+  async function calcdeliveryCharge() {
+    const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
+    if (cood) {
+      const result = calculateDistance(cood.lat, cood.long, detail?.coordinator.lat, detail?.coordinator.long);
+      try {
+        const { data } = await axios.get(
+          `${api_path_url}/charges/active-schedule`,
+          {
+            headers: {
+              "x-auth-token": authToken,
+            },
+          }
+        );
+
+        // console.log(detail.restaurantId.coordinator);
+        //  console.log(data);
+
+        const otherKm = result - 1;
+
+        const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
+
+        if (charges < 25) {
+          setDeliveryCharge(25);
+        } else {
+
+          setDeliveryCharge(charges);
+        }
+
+        // console.log(charges)
+
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+  }
+
+  useEffect(() => {
+    calcdeliveryCharge()
+  }, [detail])
 
 
 
@@ -59,9 +123,8 @@ function RestaurantCard({ detail }) {
 
   return (
     <div
-      className={`w-full border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${
-        isOpen ? "cursor-pointer" : "cursor-not-allowed"
-      }`}
+      className={`w-full border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
+        }`}
     >
       <Link to={`/list-restaurant/${detail._id}&is_open=${isOpen}`}>
         <img
@@ -81,6 +144,7 @@ function RestaurantCard({ detail }) {
           <h1 className="font-bold text-xl text-gray-700 pl-24 mb-2 sm:pl-0 sm:mb-0">
             {detail.name}
           </h1>
+
           <div className="flex items-center justify-between px-2">
             <h1 className="text-sm font-semibold text-gray-700 pt-2">
               {detail.address}
@@ -92,6 +156,8 @@ function RestaurantCard({ detail }) {
               </p>
             </div>
           </div>
+
+          <h1 className="font-semibold text-gray-600 pl-2 text-sm">Delivery charge {deliveryCharge.toFixed()}</h1>
 
           <div>
             {!detail.isOpen ? (

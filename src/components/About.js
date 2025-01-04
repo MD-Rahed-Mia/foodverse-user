@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext"; // Import AuthContext
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Footer from "../Layout/Footer";
+import PolicyContainer from "./privacy-policy/PolicyContainer";
 
 const LogoutConfirmationModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
@@ -41,7 +42,7 @@ const Profile = () => {
   };
 
   const handleLogoutConfirm = () => {
-    
+
     localStorage.removeItem("user");
     navigate("/signin"); // Redirect to sign-in page after logout
   };
@@ -166,6 +167,13 @@ const Profile = () => {
             </li>
           </ul>
         </div>
+
+
+
+
+        {/* privacy and policy */}
+        <PolicyContainer />
+
         {/* Earnings */}
         <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-bold text-purple-600">Earnings</h3>
@@ -207,6 +215,8 @@ const Profile = () => {
             </li>
           </ul>
         </div>
+
+
 
         {/* Log out section */}
         <div className="flex justify-center items-center">
