@@ -44,8 +44,11 @@ export default function CategorySection() {
           <Loading />
         </div>
       ) : (
-        <div className="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
           {category?.map((ctg, index) => {
+            if (!ctg.isPopular) {
+              return false;
+            }
             if (index > 7) {
               return false;
             }

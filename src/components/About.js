@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Footer from "../Layout/Footer";
 import PolicyContainer from "./privacy-policy/PolicyContainer";
+import toast from "react-hot-toast"
 
 const LogoutConfirmationModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
@@ -50,6 +51,11 @@ const Profile = () => {
   const handleLogoutCancel = () => {
     setShowLogoutModal(false); // Close the modal without logging out
   };
+
+  // handle upcoming
+  function handleUpComing() {
+    toast.error('Coming soon...')
+  }
 
   return (
     <div className="bg-gradient-to-r from-purple-200 to-blue-200 min-h-screen">
@@ -116,7 +122,7 @@ const Profile = () => {
                 <span className="px-1">My Address</span>
               </Link>
             </li>
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200">
+            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200" onClick={handleUpComing}>
               <svg
                 className="w-6 text-slate-600"
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +145,7 @@ const Profile = () => {
             Promotional Activity
           </h3>
           <ul className="mt-2 space-y-2">
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200">
+            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200" onClick={handleUpComing}>
               <svg
                 className="w-6 text-slate-600"
                 xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +160,7 @@ const Profile = () => {
               </svg>
               <span className="px-1">Vouchers</span>
             </li>
-            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200">
+            <li className="flex items-center p-2 rounded-lg hover:bg-gray-200" onClick={handleUpComing}>
               <svg
                 className="w-6 text-slate-600"
                 xmlns="http://www.w3.org/2000/svg"
@@ -209,9 +215,9 @@ const Profile = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <Link to="/RestaurantForm">
-                <span className="px-1"> Add Your Restaurant</span>
-              </Link>
+              <a href="https://restaurant.foodversedelivery.com/register" target="_blank" rel="noreferrer">
+                <span className="px-1">Add Your Restaurant</span>
+              </a>
             </li>
           </ul>
         </div>

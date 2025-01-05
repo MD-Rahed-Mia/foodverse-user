@@ -45,7 +45,7 @@ function Cart() {
           `${api_path_url}/menu/you-may-like?restaurant-id=${cartRest}`,
           {
             method: "POST",
-            headers: { 
+            headers: {
               "x-auth-token": authToken,
               "Content-Type": "application/json",
             },
@@ -69,9 +69,9 @@ function Cart() {
       }
     }
     handleFetchAlsoLike();
-  }, []);
+  }, [cart]);
 
-  useEffect(() => {}, [cart]);
+  useEffect(() => { }, [cart]);
 
   return (
     <div className="">
@@ -93,7 +93,7 @@ function Cart() {
                 <FaDeleteLeft />
               </button>
               <img
-                src="./img/burger.png "
+                src={item.image || "./img/burger.png "}
                 alt={item.name}
                 className="w-16 h-16 rounded-md object-cover"
               />

@@ -61,7 +61,7 @@ export default function Categories() {
       <div>
         <h1 className="my-4 text-center">categories you will love..</h1>
       </div>
-      <div className="w-full px-4 grid grid-cols-6">
+      <div className="w-full px-4 grid grid-cols-4">
         {Array.isArray(categories) && categories.length > 0 ? (
           categories.map((item) => (
             <CategoryCard category={item} key={item.id || item.name} />

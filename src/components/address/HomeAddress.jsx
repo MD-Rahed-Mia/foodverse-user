@@ -39,8 +39,8 @@ export default function HomeAddress() {
         console.log(data)
 
         if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
-          console.log(`currently no address setup. `);
-          navigate("/setup-address");
+        //  console.log(`currently no address setup. `);
+        
         } else {
           setAddressList(addressData)
         }
@@ -68,7 +68,7 @@ export default function HomeAddress() {
 
           <div className="ml-2 text-white text-sm">
             <span className="block">
-              {addressList?.slice(0, 30)}{addressList?.length > 30 ? "...." : null}
+              {addressList?.slice(0, 15)}{addressList?.length > 15 ? "...." : null}
             </span>
           </div>
         </div>

@@ -19,6 +19,34 @@ const CartProvider = ({ children }) => {
   // addons
   const [addonTotal, setAddonTotal] = useState(0);
 
+  // favourite items
+  const [favoriteMenus, setFavoriteMenus] = useState(() => {
+    const localCart = JSON.parse(localStorage.getItem("favoriteRestaurant")) || [];
+    return localCart;
+  });
+
+
+  // handle add new items on favourite
+  function handleAddToFavorite(id) {
+    setFavoriteMenus((prev) => [...prev, id]);
+    localStorage.setItem("favoriteRestaurant", JSON.stringify(favoriteMenus));
+  }
+
+  // handle remove favorite items
+function handleRemoveFavorite(id) {
+  // Filter out the item with the specified ID
+  const filterItem = favoriteMenus.filter((item) => item !== id);
+
+  // Update the state with the filtered items
+  setFavoriteMenus([...filterItem]);
+
+  // Update localStorage with the new favoriteMenus (filtered list)
+  localStorage.setItem("favoriteRestaurant", JSON.stringify(filterItem));
+}
+
+
+
+
   // discount
   const [discount, setDiscount] = useState(20);
 
@@ -56,9 +84,9 @@ const CartProvider = ({ children }) => {
       return;
     }
 
-     console.log(existingRestaurant);
+    console.log(existingRestaurant);
 
-     console.log("items restaurantId ", item.restaurantId._id);
+    console.log("items restaurantId ", item.restaurantId._id);
 
     // Check if the cart already has items from a different restaurant
     if (existingRestaurant && existingRestaurant.toString() !== item.restaurantId._id) {
@@ -154,6 +182,9 @@ const CartProvider = ({ children }) => {
         handleRemoveItem,
         addonTotal,
         discount,
+        handleAddToFavorite,
+        favoriteMenus,
+        handleRemoveFavorite
       }}
     >
       {children}

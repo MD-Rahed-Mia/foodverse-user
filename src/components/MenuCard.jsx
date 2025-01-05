@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCartContext } from "../contexts/CartContext";
-import { HiOutlineHeart } from "react-icons/hi";
+import { FaHeart } from "react-icons/fa";
 import { HiPlus } from "react-icons/hi";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FiMinus } from "react-icons/fi";
@@ -16,6 +16,28 @@ export default function MenuCard({ detail }) {
   const [addonValue, setAddonValue] = useState(0);
 
   const [deliveryCharge, setDeliveryCharge] = useState(0);
+
+  const [isFavorite, setIsFavorite] = useState(null);
+
+  const { handleAddToFavorite, favoriteMenus, handleRemoveFavorite } = useCartContext();
+
+
+  //check is loved
+  function checkedIsLoved() {
+    const index = favoriteMenus.findIndex((item) => detail._id.toString() === item);
+    if (index !== -1) {
+      setIsFavorite(true);
+    } else {
+      setIsFavorite(false);
+    }
+  }
+
+
+  useEffect(() => {
+    checkedIsLoved()
+  }, [favoriteMenus])
+
+
 
   // check delivery charge
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -81,39 +103,31 @@ export default function MenuCard({ detail }) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   // isopen
   const [isOpen, setIsOpen] = useState(null);
 
   useEffect(() => {
     const is = detail?.restaurantId?.isOpen;
     setIsOpen(is);
-    // console.log(`is open is : ${is}`);
+
   }, [detail]);
 
   const [addonList, setAddonList] = useState([]);
 
-  // console.log(detail);
-
   // handle average food
   function handleFavouriteItems(event) {
     event.stopPropagation();
-    //  console.log(`items is clicked: `);
+    handleAddToFavorite(detail._id);
   }
 
-  // useEffect(() => {
-  //   console.log(`is open is : `, isOpen);
-  // }, [isOpen]);
+  // handleRemove
+  function handleRemoveFavoriteITems(event) {
+    event.stopPropagation();
+
+    console.log(`item remove clicked`);
+    handleRemoveFavorite(detail._id);
+  }
+
 
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
@@ -142,7 +156,7 @@ export default function MenuCard({ detail }) {
         onClick={handleCardClick}
       >
         {/* is open text */}
-        <h1 className="absolute z-50 top-12 right-2  rounded-full bg-red-500 text-white">
+        <h1 className={`absolute z-50 text-[13px] top-12 right-2  rounded-full bg-red-500 text-white ${isOpen ? "" : "px-4 "}`}>
           {isOpen ? "" : "closed"}
         </h1>
         <img
@@ -162,9 +176,9 @@ export default function MenuCard({ detail }) {
         ) : null}
 
         {/* Favourite */}
-        <HiOutlineHeart
-          className=" h-8 w-8 cursor-pointer px-2 py-2 rounded-full bg-white text-gray-500 absolute right-2 top-2 "
-          onClick={handleFavouriteItems}
+        <FaHeart
+          className={`h-8 w-8 cursor-pointer px-2 py-2 rounded-full bg-white ${isFavorite ? "text-red-500" : "text-gray-500"}  absolute right-2 top-2 `}
+          onClick={isFavorite ? handleRemoveFavoriteITems : handleFavouriteItems}
         />
         <h3 className="text-sm font-semibold text-gray-800 mx-2 mt-2">
           {detail?.name}

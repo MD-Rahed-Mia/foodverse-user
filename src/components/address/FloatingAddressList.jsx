@@ -5,6 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { api_path_url, authToken } from '../../secret';
+import { Link } from 'react-router-dom';
 
 export default function FloatingAddressList() {
     const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
@@ -23,7 +24,7 @@ export default function FloatingAddressList() {
                 }
             );
 
-          //  console.log("API Data:", data);
+            //  console.log("API Data:", data);
 
             if (data.success) {
                 setAddressList(data.address); // Assuming the response has this structure
@@ -51,7 +52,7 @@ export default function FloatingAddressList() {
         }))
 
         setIsFloatingAddressActive(!isFloatingAddressActive)
-      //  console.log("Selected Address:", addressDetails);
+        //  console.log("Selected Address:", addressDetails);
     };
 
     return (
@@ -106,7 +107,19 @@ export default function FloatingAddressList() {
                                 : null
                         }
 
+
+                        <a
+                            href={"/SetAddressManager"}
+                            className="bg-gradient-to-r inline-block mx-auto mt-4 from-purple-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
+                        >
+                            Add Address
+                        </a>
+
+
+
                     </div>
+
+
                 </div>
             }
         </>

@@ -24,9 +24,9 @@ export default function CategoryFilter() {
     fetchData();
   }, [category]);
 
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
+  // useEffect(() => {
+  //   console.log(items);
+  // }, [items]);
   return (
     <div>
       <div className="pt-24"></div>
