@@ -300,26 +300,26 @@ function App() {
               <Route path="/privacy-policy" element={
                 <>
                   <PrivateRoute element={PrivacyPolicy} />
-                  <Footer />
+                 
                 </>
               } />
 
               <Route path="/refund-policy" element={
                 <>
                   <PrivateRoute element={RefundPolicy} />
-                  <Footer />
+                
                 </>
               } />
               <Route path="/cancalletion-policy" element={
                 <>
                   <PrivateRoute element={CancellationPolicy} />
-                  <Footer />
+                 
                 </>
               } />
               <Route path="/shipping-policy" element={
                 <>
                   <PrivateRoute element={ShippingPolicy} />
-                  <Footer />
+                
                 </>
               } />
 
@@ -327,7 +327,7 @@ function App() {
               <Route path="/help-and-support" element={
                 <>
                   <PrivateRoute element={HelpAndSupport} />
-                  <Footer />
+                 
                 </>
               } />
 

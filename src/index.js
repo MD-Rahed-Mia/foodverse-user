@@ -4,12 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { SocketProvider } from "./contexts/SocketIo";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <SocketProvider>
-    <App />
-  </SocketProvider>,
+  <Provider store={store}>
+    <SocketProvider>
+      <App />
+    </SocketProvider>,
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

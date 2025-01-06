@@ -94,7 +94,7 @@ export default function PrivacyPolicy() {
 
                         <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-4">Contact Us</h2>
                         <p className="text-sm sm:text-base text-gray-600">
-                            For any questions, reach us at <a href="mailto:support@foodverse.com" className="text-blue-600">foodverse2024@gmail.com</a>.
+                            For any questions, reach us at <a href="mailto:support@foodverse.com" className="text-blue-600">info@foodversedelivery.com</a>.
                         </p>
                     </div>
                 </div>

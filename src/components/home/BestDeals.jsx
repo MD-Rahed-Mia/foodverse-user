@@ -1,57 +1,31 @@
-
-
-import React, { useEffect, useState } from 'react'
-import MenuCard from '../MenuCard'
-import axios from 'axios';
-import { api_path_url, authToken } from '../../secret';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useEffect, useState } from 'react';
+import MenuCard from '../MenuCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBestDeals } from '../../features/slices/bestDealSlices';
+import LoadingSkeleton from '../skeleton/LoadingSkeleton';
 
 export default function BestDeals() {
+    const { value, loading } = useSelector((state) => state.bestDeal);
+    const dispatch = useDispatch();
 
-    const [items, setItems] = useState(null);
-    const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
-
-    // get popular items
-    async function getPopularItems() {
-        try {
-
-            const { data } = await axios.get(`${api_path_url}/menu/best-deals`, {
-                headers: {
-                    "x-auth-token": authToken
-                }
-            });
-
-            console.log(data)
-
-            if (data.success) {
-                setItems(data.items)
-            }
-
-        } catch (error) {
-            console.log(error.message)
-            return error;
-
+    useEffect(() => {
+        // Only fetch data if it's not already available in Redux
+        if (!value || value.length === 0) {
+            dispatch(fetchBestDeals());
         }
+    }, [dispatch, value]); // Run effect only if 'value' is empty
+
+    if (loading) {
+        return <div className='w-[90%] mx-auto my-4'><LoadingSkeleton /></div>;
     }
 
-
-    useEffect(() => {
-        getPopularItems()
-    }, [])
-
-    useEffect(() => {
-        getPopularItems()
-    }, [isFloatingAddressActive])
-
-
     return (
-        <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
-
-            {
-                items && items.map((item, index) => {
-                    return <MenuCard detail={item} />
-                })
-            }
-        </div>
-    )
+        <>
+            <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
+                {value && value.map((item, index) => (
+                    <MenuCard key={index} detail={item} />
+                ))}
+            </div>
+        </>
+    );
 }

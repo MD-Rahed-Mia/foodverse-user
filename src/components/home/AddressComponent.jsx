@@ -27,7 +27,7 @@ export default function AddressComponent({ isAddressAvailable, setIsAddressAvail
             if (data.success) {
                 const addressData = data.address[label]?.address;
 
-                console.log(data)
+               
 
                 if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
                     //  console.log(`currently no address setup. `);

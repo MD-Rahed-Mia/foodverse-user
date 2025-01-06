@@ -6,7 +6,7 @@ export default function HelpAndSupport() {
 
     const whatsappNumber = "+8801736497140";
     const phoneNumber = "+8801736497140";
-    const email = "foodverse2024@gmail.com";
+    const email = "info@foodversedelivery.com";
 
     function makeCall() {
         window.location.href = `tel:${phoneNumber}`;
@@ -65,7 +65,7 @@ export default function HelpAndSupport() {
                             </div>
                             <div>
                                 <p className="font-bold text-gray-800">Email Us</p>
-                                <p className="text-sm text-gray-600">foodverse2024@gmail.com</p>
+                                <p className="text-sm text-gray-600">info@foodversedelivery.com</p>
                             </div>
                         </div>
 

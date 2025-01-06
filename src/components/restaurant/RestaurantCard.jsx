@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import { toast } from "react-hot-toast";
 import { api_path_url, authToken } from "../../secret";
 import axios from "axios";
+import { FaMotorcycle } from "react-icons/fa6";
 
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,8 +44,7 @@ function RestaurantCard({ detail }) {
           }
         );
 
-        // console.log(detail.restaurantId.coordinator);
-        //  console.log(data);
+
 
         const otherKm = result - 1;
 
@@ -99,9 +99,9 @@ function RestaurantCard({ detail }) {
         }
 
         // Log times for debugging
-        console.log("Opening Time:", openTime.toISO());
-        console.log("Closing Time:", closeTime.toISO());
-        console.log("Current Time:", now.toISO());
+        // console.log("Opening Time:", openTime.toISO());
+        // console.log("Closing Time:", closeTime.toISO());
+        // console.log("Current Time:", now.toISO());
 
         // Determine if the restaurant is open
         if (now >= openTime && now <= closeTime) {
@@ -123,7 +123,7 @@ function RestaurantCard({ detail }) {
 
   return (
     <div
-      className={`w-full border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
+      className={`w-full min-w-80 border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
         }`}
     >
       <Link to={`/list-restaurant/${detail._id}&is_open=${isOpen}`}>
@@ -140,7 +140,7 @@ function RestaurantCard({ detail }) {
             className=" rounded-lg w-full h-full object-cover "
           />
         </div>
-        <div className="py-2">
+        <div className="py-2  ">
           <h1 className="font-bold text-xl text-gray-700 pl-24 mb-2 sm:pl-0 sm:mb-0">
             {detail.name}
           </h1>
@@ -152,12 +152,12 @@ function RestaurantCard({ detail }) {
             <div className="flex items-center justify-between pt-2">
               <HiOutlineStar className="size-5 text-purple-500" />
               <p className="px-2 font-bold text-gray-700">
-                {detail.averageReview}
+              {detail.averageReview % 1 === 0 ? `${detail.averageReview}.0` : detail.averageReview}
               </p>
             </div>
           </div>
 
-          <h1 className="font-semibold text-gray-600 pl-2 text-sm">Delivery charge {deliveryCharge.toFixed()}</h1>
+          <h1 className="font-semibold flex items-center gap-2 text-gray-600 pl-2 text-sm"><FaMotorcycle /> {deliveryCharge.toFixed()} Delivery Fee</h1>
 
           <div>
             {!detail.isOpen ? (

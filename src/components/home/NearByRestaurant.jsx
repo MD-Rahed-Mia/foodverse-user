@@ -4,6 +4,7 @@ import axios from 'axios';
 import { api_path_url, authToken } from '../../secret';
 import { useAuth } from '../../contexts/AuthContext';
 import Cookies from "js-cookie";
+import LoadingSkeleton from '../skeleton/LoadingSkeleton';
 
 export default function NearByRestaurant() {
     const [restaurant, setRestaurant] = useState([]); // Initialize as an empty array
@@ -73,9 +74,9 @@ export default function NearByRestaurant() {
 
     return (
         <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
-            {loading && <h1>Loading nearby restaurants... <br /> Please wait...</h1>}
+            {loading && <LoadingSkeleton />}
             {!loading && restaurant.length === 0 && <h1>Currently no restaurant available...</h1>}
-            
+
             {restaurant && restaurant.map((item, index) => (
                 <RestaurantCard key={index} detail={item} />
             ))}

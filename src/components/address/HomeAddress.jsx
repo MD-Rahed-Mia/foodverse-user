@@ -9,6 +9,7 @@ import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom"; // Use this hook for navigation in React Router v6
 
+
 export default function HomeAddress() {
   const [addressList, setAddressList] = useState(null);
   const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
@@ -36,7 +37,7 @@ export default function HomeAddress() {
       if (data.success) {
         const addressData = data.address[label]?.address;
 
-        console.log(data)
+       
 
         if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
         //  console.log(`currently no address setup. `);

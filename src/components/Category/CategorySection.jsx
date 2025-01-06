@@ -18,7 +18,7 @@ export default function CategorySection() {
             "x-auth-token": authToken,
           },
         });
-        console.log("Categories:", data);
+
 
         if (data) {
           setCategory(data.result);
