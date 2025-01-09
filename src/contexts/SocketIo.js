@@ -4,8 +4,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 
 // Set your Socket.IO server URL here
-const SOCKET_URL = process.env.REACT_APP_SOCKET_SERVER; // Replace with your server URL
-
+const SOCKET_URL = process.env.REACT_APP_SOCKET_SERVER;
 // Create a Socket Context
 const SocketContext = createContext(null);
 
@@ -33,6 +32,15 @@ export const SocketProvider = ({ children }) => {
     // On disconnection
     socketInstance.on("disconnect", () => {
       console.log("Disconnected from server");
+    });
+
+    socketInstance.on('connect_error', (err) => {
+      console.log(err.message);
+      // some additional description, for example the status code of the initial HTTP response
+  console.log(err.description);
+
+  // some additional context, for example the XMLHttpRequest object
+  console.log(err.context);
     });
 
     // Set the socket instance

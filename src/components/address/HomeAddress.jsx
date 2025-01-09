@@ -15,6 +15,9 @@ export default function HomeAddress() {
   const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
   const navigate = useNavigate(); // React Router v6's navigate hook
 
+
+  const { user } = useAuth();
+
   // Function to check if all address fields are empty
   function checkIfAddressEmpty(address) {
     return !address.home && !address.office && !address.others;
@@ -23,33 +26,7 @@ export default function HomeAddress() {
   async function getDeliveryLocationList() {
     const id = Cookies.get("id");
     const label = localStorage.getItem("selectedLocation");
-
-    try {
-      const { data } = await axios.get(
-        `${api_path_url}/user/delivery/location?id=${id}`,
-        {
-          headers: {
-            "x-auth-token": authToken,
-          },
-        }
-      );
-
-      if (data.success) {
-        const addressData = data.address[label]?.address;
-
-       
-
-        if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
-        //  console.log(`currently no address setup. `);
-        
-        } else {
-          setAddressList(addressData)
-        }
-
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    setAddressList(user?.address[label]?.address)
   }
 
   useEffect(() => {

@@ -3,39 +3,21 @@ import { api_path_url, authToken } from "../../secret";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Loading from "../Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategory } from "../../features/slices/CategorySlices";
 
 export default function CategorySection() {
-  // loading
-  const [loading, setLoading] = useState(null);
   const [category, setCategory] = useState(null);
 
+  const { value, loading, } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    async function getCategoryList() {
-      setLoading(true);
-      try {
-        const { data } = await axios.get(`${api_path_url}/category/all`, {
-          headers: {
-            "x-auth-token": authToken,
-          },
-        });
-
-
-        if (data) {
-          setCategory(data.result);
-        }
-
-        setLoading(false);
-      } catch (error) {
-        if (error.name === "CanceledError") {
-          console.warn("Request canceled:", error.message);
-        } else {
-          console.error("Error fetching categories:", error);
-        }
-      }
+    // Only fetch data if it's not already available in Redux
+    if (!value || value.length === 0) {
+      dispatch(fetchCategory());
     }
-
-    getCategoryList();
-  }, []);
+  }, [dispatch, value]); // Run effect only if 'value' is empty
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -45,7 +27,7 @@ export default function CategorySection() {
         </div>
       ) : (
         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
-          {category?.map((ctg, index) => {
+          {value?.map((ctg, index) => {
             if (!ctg.isPopular) {
               return false;
             }

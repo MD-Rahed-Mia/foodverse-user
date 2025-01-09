@@ -14,7 +14,6 @@ export default function NearByFoods() {
     // get popular items
     async function getPopularItems() {
         try {
-
             const {data} = await axios.get(`${api_path_url}/menu/popular-items`, {
                 headers: {
                     "x-auth-token": authToken

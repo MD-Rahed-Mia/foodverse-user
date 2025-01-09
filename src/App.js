@@ -36,9 +36,7 @@ import "swiper/css";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 // cookies
-
 import Cookies from "js-cookie";
-
 import Notification from "./components/Notification.js";
 import SetAddressManager from "./components/SetAddressManager.js";
 import { useSocket } from "./contexts/SocketIo.js";
@@ -57,6 +55,7 @@ import ShippingPolicy from "./components/privacy-policy/ShippingPolicy.jsx";
 import HelpAndSupport from "./components/privacy-policy/HelpAndSupport.jsx";
 import SetupAddress from "./pages/SetupAddress.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
+import DeleteAccount from "./pages/DeleteAccount.jsx";
 
 function App() {
   const socket = useSocket();
@@ -69,6 +68,8 @@ function App() {
       const id = Cookies.get("id");
       socket.emit("auth", id);
       console.log(socket);
+    } else {
+      console.log('no socket found.')
     }
   }, [socket]);
 
@@ -77,8 +78,7 @@ function App() {
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
 
-      <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
-
+     
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
         <meta
@@ -122,6 +122,10 @@ function App() {
 
 
         <Router>
+
+        <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
+
+
           <div className="App">
             {/* message toast */}
             <MessageToast />
@@ -300,26 +304,26 @@ function App() {
               <Route path="/privacy-policy" element={
                 <>
                   <PrivateRoute element={PrivacyPolicy} />
-                 
+
                 </>
               } />
 
               <Route path="/refund-policy" element={
                 <>
                   <PrivateRoute element={RefundPolicy} />
-                
+
                 </>
               } />
               <Route path="/cancalletion-policy" element={
                 <>
                   <PrivateRoute element={CancellationPolicy} />
-                 
+
                 </>
               } />
               <Route path="/shipping-policy" element={
                 <>
                   <PrivateRoute element={ShippingPolicy} />
-                
+
                 </>
               } />
 
@@ -327,7 +331,7 @@ function App() {
               <Route path="/help-and-support" element={
                 <>
                   <PrivateRoute element={HelpAndSupport} />
-                 
+
                 </>
               } />
 
@@ -343,7 +347,16 @@ function App() {
                   <PrivateRoute element={ChangePassword} />
                   <Footer />
                 </>
+
               } />
+              <Route path="/delete-account" element={
+                <>
+                  <PrivateRoute element={DeleteAccount} />
+                  <Footer />
+                </>
+
+              } />
+
 
 
             </Routes>

@@ -7,18 +7,18 @@ const initialState = {
     loading: false,
     isError: false
 }
-
+ 
 // action for fetch
 export const fetchPopularItem = createAsyncThunk("fetch/popularItem", async () => {
     try {
-        console.log("Fetching popular items...");
+      //  console.log("Fetching popular items...");
         const { data } = await axios.get(`${api_path_url}/menu/popular-items`, {
             headers: {
                 "x-auth-token": authToken
             }
         });
 
-        console.log("Fetched data: ", data);
+      //  console.log("Fetched data: ", data);
 
         return data.menuItems;
     } catch (error) {
@@ -53,8 +53,6 @@ const popularItemSlice = createSlice({
             });
     }
 });
-
-
 
 export const { getPopularItem } = popularItemSlice.reducer
 

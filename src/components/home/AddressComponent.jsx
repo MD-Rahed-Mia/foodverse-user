@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Cookies from "js-cookie"
 import axios from 'axios';
 import { api_path_url, authToken } from '../../secret';
+import Footer from '../../Layout/Footer';
 
 export default function AddressComponent({ isAddressAvailable, setIsAddressAvailable }) {
 
@@ -27,7 +28,7 @@ export default function AddressComponent({ isAddressAvailable, setIsAddressAvail
             if (data.success) {
                 const addressData = data.address[label]?.address;
 
-               
+
 
                 if (data.address.office.label === undefined && data.address.home.label === undefined && data.address.others.label === undefined) {
                     //  console.log(`currently no address setup. `);
@@ -74,6 +75,8 @@ export default function AddressComponent({ isAddressAvailable, setIsAddressAvail
                         </Link>
                     </div>
                 </section>
+
+                <Footer />
             </div>
         </div>
     )

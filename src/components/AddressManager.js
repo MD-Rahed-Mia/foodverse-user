@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const AddressManager = () => {
   const [addresses, setAddresses] = useState([]);
@@ -19,6 +20,10 @@ const AddressManager = () => {
     phoneNumber: "",
   });
   const mapRef = useRef(null);
+
+
+
+  const { user, setUser } = useAuth();
 
   // loading
   const [loading, setLoading] = useState(null);
@@ -201,9 +206,9 @@ const AddressManager = () => {
   };
 
   const deleteAddress = async (label) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const id = JSON.parse(localStorage.getItem("user"));
     const apiResponse = await axios.delete(
-      `${api_path_url}/user/delete-address?id=${user.id}&label=${label}`,
+      `${api_path_url}/user/delete-address?id=${id.id}&label=${label}`,
       {
         headers: {
           "x-auth-token": authToken,
@@ -215,6 +220,10 @@ const AddressManager = () => {
 
     if (data.success) {
       toast.success(data.message);
+      const address = user?.address;
+      delete address[label]
+      setUser((prev) => ({ ...prev, address: { ...address } }));
+
       fetchAddresses()
     } else {
       toast.error(data.message);

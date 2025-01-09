@@ -18,10 +18,18 @@ import NearByFoods from "./home/NearByFoods";
 import NearByRestaurant from "./home/NearByRestaurant";
 import BestDeals from "./home/BestDeals";
 import AddressComponent from "./home/AddressComponent";
+import { useAuth } from "../contexts/AuthContext";
 
 function Home() {
 
   const [isAddressAvailable, setIsAddressAvailable] = useState(null);
+
+  const { user } = useAuth();
+
+
+  // useEffect(() => {
+  //   console.log(user)
+  // }, [user]);
 
   const ads = [
     { src: "./img/Add1.jpg", alt: "Ad 1" },
@@ -102,7 +110,7 @@ function Home() {
       </section>
     </div>
 
-    
+
       <AddressComponent isAddressAvailable={isAddressAvailable} setIsAddressAvailable={setIsAddressAvailable} />
     </>
   }
@@ -183,7 +191,7 @@ function Home() {
         </div>
 
 
-        <AddressComponent isAddressAvailable={isAddressAvailable} setIsAddressAvailable={setIsAddressAvailable} />
+        {/* <AddressComponent isAddressAvailable={isAddressAvailable} setIsAddressAvailable={setIsAddressAvailable} /> */}
 
         {/* popular items */}
 
@@ -207,7 +215,7 @@ function Home() {
           <h1 className="text-lg px-4 font-semibold">Near by foods</h1>
           <NearByFoods />
         </div>
-        
+
 
         <div className="py-6"></div>
 

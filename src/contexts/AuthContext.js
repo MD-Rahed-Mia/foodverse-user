@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [user, setUser] = useState(null);
   const [isFloatingAddressActive, setIsFloatingAddressActive] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   // Function to log in the user and store the token in localStorage
   const login = (token) => {
@@ -46,9 +47,11 @@ export const AuthProvider = ({ children }) => {
 
         const data = await response.data;
 
+        //   console.log(data)
+
         if (data.success) {
           setUser(data.user);
-        //  console.log(user);
+          //  console.log('user is : ', user);
         }
       } catch (error) {
         if (error.response) {
@@ -66,7 +69,10 @@ export const AuthProvider = ({ children }) => {
     logout,
     user,
     setIsFloatingAddressActive,
-    isFloatingAddressActive
+    isFloatingAddressActive,
+    setUser,
+    selectedAddress,
+    setSelectedAddress
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

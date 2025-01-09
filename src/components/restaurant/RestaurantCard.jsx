@@ -123,7 +123,7 @@ function RestaurantCard({ detail }) {
 
   return (
     <div
-      className={`w-full min-w-80 border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
+      className={`w-full min-w-60 border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
         }`}
     >
       <Link to={`/list-restaurant/${detail._id}&is_open=${isOpen}`}>

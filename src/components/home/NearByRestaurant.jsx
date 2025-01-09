@@ -8,27 +8,21 @@ import LoadingSkeleton from '../skeleton/LoadingSkeleton';
 
 export default function NearByRestaurant() {
     const [restaurant, setRestaurant] = useState([]); // Initialize as an empty array
-    const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
+    const { isFloatingAddressActive, setIsFloatingAddressActive, user, selectedAddress } = useAuth();
     const [addressList, setAddressList] = useState(null);
     const [loading, setLoading] = useState(false);
+
+
+
 
     // Function to get delivery location list
     async function getDeliveryLocationList() {
         const selectedAddress = localStorage.getItem('selectedLocation');
-        const id = Cookies.get("id");
         try {
-            const { data } = await axios.get(
-                `${api_path_url}/user/delivery/location?id=${id}`,
-                {
-                    headers: {
-                        "x-auth-token": authToken,
-                    },
-                }
-            );
+            const currentAddress = user?.address[selectedAddress];
+            console.log(user?.address[currentAddress])
+            setAddressList(currentAddress)
 
-            if (data.success) {
-                setAddressList(data.address[selectedAddress]);
-            }
         } catch (error) {
             console.error("Error fetching delivery locations:", error);
         }
@@ -36,12 +30,12 @@ export default function NearByRestaurant() {
 
     // Function to fetch nearby restaurants
     async function getNearByRestaurant() {
-        if (!addressList) return;
 
         setLoading(true);
+        setRestaurant(null);
         try {
             const { data } = await axios.get(
-                `${api_path_url}/restaurant?lat=${addressList.latitude}&long=${addressList.longitude}`,
+                `${api_path_url}/restaurant?lat=${selectedAddress?.latitude}&long=${selectedAddress?.longitude}`,
                 {
                     headers: {
                         "x-auth-token": authToken,
@@ -63,15 +57,12 @@ export default function NearByRestaurant() {
     }
 
     useEffect(() => {
-        getDeliveryLocationList();
+        getNearByRestaurant()
     }, []);
 
     useEffect(() => {
-        if (addressList) {
-            getNearByRestaurant();
-        }
-    }, [addressList, isFloatingAddressActive]); // Dependency on both addressList and isFloatingAddressActive
-
+        getNearByRestaurant()
+    }, [selectedAddress]);
     return (
         <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
             {loading && <LoadingSkeleton />}

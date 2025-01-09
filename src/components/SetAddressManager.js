@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { LoadScript, GoogleMap } from "@react-google-maps/api";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuth } from "../contexts/AuthContext";
 
 // Utility to calculate distance between two lat/lng points
 function calculateDistance(lat1, lng1, lat2, lng2) {
@@ -153,6 +154,9 @@ function SetAddressManager() {
     }
   };
 
+
+  const { user, setUser } = useAuth();
+
   const updateUserAddress = async () => {
     try {
       const userId = JSON.parse(localStorage.getItem("user"))?.id;
@@ -168,6 +172,8 @@ function SetAddressManager() {
       );
       if (response.data.success) {
         alert("Address updated successfully!");
+        setUser((prev) => ({...prev, address: {...prev.address, ...response.data.address}}))
+
       } else {
         alert("Failed to update address.");
       }
@@ -190,11 +196,10 @@ function SetAddressManager() {
         <div className="flex space-x-4 mb-4 justify-center">
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${
-              newAddress.label === "home"
+            className={`px-4 py-2 rounded-md ${newAddress.label === "home"
                 ? "bg-blue-400 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "home" }))
             }
@@ -203,11 +208,10 @@ function SetAddressManager() {
           </button>
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${
-              newAddress.label === "office"
+            className={`px-4 py-2 rounded-md ${newAddress.label === "office"
                 ? "bg-blue-400 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "office" }))
             }
@@ -216,11 +220,10 @@ function SetAddressManager() {
           </button>
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${
-              newAddress.label === "others"
+            className={`px-4 py-2 rounded-md ${newAddress.label === "others"
                 ? "bg-blue-400 text-white"
                 : "bg-gray-200"
-            }`}
+              }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "others" }))
             }
@@ -295,11 +298,10 @@ function SetAddressManager() {
         <button
           type="submit"
           disabled={isZone ? false : true}
-          className={`${
-            newAddress.label === ""
+          className={`${newAddress.label === ""
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-600"
-          } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
+            } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
         >
           {!isZone ? "Service Not Available" : "Submit"}
         </button>
