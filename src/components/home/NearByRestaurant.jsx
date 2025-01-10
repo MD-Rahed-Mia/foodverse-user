@@ -8,31 +8,24 @@ import LoadingSkeleton from '../skeleton/LoadingSkeleton';
 
 export default function NearByRestaurant() {
     const [restaurant, setRestaurant] = useState([]); // Initialize as an empty array
-    const { isFloatingAddressActive, setIsFloatingAddressActive, user, selectedAddress } = useAuth();
-    const [addressList, setAddressList] = useState(null);
+    const { selectedAddress, setSelectedAddress, user } = useAuth();
     const [loading, setLoading] = useState(false);
 
 
 
+    useEffect(() => {
 
-    // Function to get delivery location list
-    async function getDeliveryLocationList() {
-        const selectedAddress = localStorage.getItem('selectedLocation');
-        try {
-            const currentAddress = user?.address[selectedAddress];
-            console.log(user?.address[currentAddress])
-            setAddressList(currentAddress)
+        console.log(selectedAddress)
+    }, [selectedAddress])
 
-        } catch (error) {
-            console.error("Error fetching delivery locations:", error);
-        }
-    }
+
 
     // Function to fetch nearby restaurants
     async function getNearByRestaurant() {
 
         setLoading(true);
         setRestaurant(null);
+
         try {
             const { data } = await axios.get(
                 `${api_path_url}/restaurant?lat=${selectedAddress?.latitude}&long=${selectedAddress?.longitude}`,
@@ -43,10 +36,10 @@ export default function NearByRestaurant() {
                 }
             );
 
+            console.log(data)
+
             if (data.success) {
                 setRestaurant(data.restaurant);
-            } else {
-                setRestaurant([]);
             }
         } catch (error) {
             console.error("Error fetching nearby restaurants:", error);
@@ -57,12 +50,14 @@ export default function NearByRestaurant() {
     }
 
     useEffect(() => {
-        getNearByRestaurant()
+        if (selectedAddress !== undefined || selectedAddress !== null) {
+            getNearByRestaurant()
+        }
     }, []);
 
     useEffect(() => {
         getNearByRestaurant()
-    }, [selectedAddress]);
+    }, [selectedAddress, user?.address]);
     return (
         <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
             {loading && <LoadingSkeleton />}

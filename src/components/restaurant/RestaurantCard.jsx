@@ -145,19 +145,23 @@ function RestaurantCard({ detail }) {
             {detail.name}
           </h1>
 
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center text-[14px] justify-between px-2">
             <h1 className="text-sm font-semibold text-gray-700 pt-2">
               {detail.address}
             </h1>
+          </div>
+
+          <div className="w-full flex  items-center justify-between">
+            <h1 className="font-semibold  flex items-center gap-2 text-gray-600 pl-2 text-[13px]"><FaMotorcycle /> {deliveryCharge.toFixed()} Delivery Fee</h1>
+
+
             <div className="flex items-center justify-between pt-2">
               <HiOutlineStar className="size-5 text-purple-500" />
               <p className="px-2 font-bold text-gray-700">
-              {detail.averageReview % 1 === 0 ? `${detail.averageReview}.0` : detail.averageReview}
+                {detail.averageReview % 1 === 0 ? `${detail.averageReview}.0` : detail.averageReview}
               </p>
             </div>
           </div>
-
-          <h1 className="font-semibold flex items-center gap-2 text-gray-600 pl-2 text-sm"><FaMotorcycle /> {deliveryCharge.toFixed()} Delivery Fee</h1>
 
           <div>
             {!detail.isOpen ? (

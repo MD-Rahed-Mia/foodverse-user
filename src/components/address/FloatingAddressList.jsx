@@ -53,6 +53,25 @@ export default function FloatingAddressList() {
         fetchCurrentLocation();
     }, []);
 
+
+    useEffect(() => {
+        if (selectedAddress === null || selectedAddress === undefined) {
+            if (user?.address) {
+
+                const firstKey = Object.keys(user?.address)[0];
+                const firstValue = user?.address[firstKey];
+
+                if (firstKey && firstValue) {
+                    setSelectedAddress(firstValue);
+                }
+            }
+        }
+
+        //   console.log(selectedAddress);
+    }, [user, selectedAddress]);
+
+
+
     useEffect(() => {
         if (user?.address) {
             // Merge currentAddress with user addresses
@@ -72,7 +91,7 @@ export default function FloatingAddressList() {
 
     const handleAddressSelect = (addressDetails) => {
         //  setSelectedAddress(addressDetails?.label);
-        localStorage.setItem("selectedLocation", addressDetails.label);
+        localStorage.setItem("selectedLocation", addressDetails.label || "current");
         localStorage.setItem("locationCoordinators", JSON.stringify({
             lat: addressDetails.latitude,
             long: addressDetails.longitude
@@ -81,6 +100,11 @@ export default function FloatingAddressList() {
         setIsFloatingAddressActive(!isFloatingAddressActive);
     };
 
+
+    // useEffect(() => {
+    //     localStorage.setItem("selectedLocation", "current");
+    //     setSelectedAddress("current")
+    // }, [])
 
 
 
@@ -117,7 +141,7 @@ export default function FloatingAddressList() {
                                                     name="address"
                                                     id={`address-${category}`}
                                                     value={addressDetails.label}
-                                                    checked={selectedAddress?.label === addressDetails.label} // Only select if the label matches the selected address
+                                                    checked={selectedAddress?.label === addressDetails.label || selectedAddress === "current"} // Only select if the label matches the selected address
                                                     onChange={() => handleAddressSelect(addressDetails)} // Handle radio button change
                                                 />
                                                 <FaLocationDot />
