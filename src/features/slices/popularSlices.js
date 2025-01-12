@@ -42,7 +42,7 @@ const popularItemSlice = createSlice({
             state.loading = true;
         })
             .addCase(fetchPopularItem.fulfilled, (state, action) => {
-                console.log("Popular items fetched and stored in state: ", action.payload);
+            //    console.log("Popular items fetched and stored in state: ", action.payload);
                 state.value = action.payload;
                 state.loading = false;  
             })

@@ -26,11 +26,6 @@ function Home() {
 
   const { user } = useAuth();
 
-
-  // useEffect(() => {
-  //   console.log(user)
-  // }, [user]);
-
   const ads = [
     { src: "./img/Add1.jpg", alt: "Ad 1" },
     { src: "./img/Add2.jpg", alt: "Ad 2" },
@@ -86,7 +81,7 @@ function Home() {
     return <> <div className="bg-red-500 w-full fixed z-10">
       <header className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 pb-8 px-4 flex items-center justify-between">
 
-        <HomeAddress />
+        {/*  */}
         {/* Notification Icon */}
         <div>
           <Link to="/notification/all">

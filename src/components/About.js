@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Footer from "../Layout/Footer";
 import PolicyContainer from "./privacy-policy/PolicyContainer";
 import toast from "react-hot-toast"
+import Cookies from "js-cookie"
 
 const LogoutConfirmationModal = ({ show, onClose, onConfirm }) => {
   if (!show) return null;
@@ -45,7 +46,9 @@ const Profile = () => {
   const handleLogoutConfirm = () => {
 
     localStorage.removeItem("user");
-    navigate("/signin"); // Redirect to sign-in page after logout
+    Cookies.remove("id");
+    logout();
+    navigate("/signin");
   };
 
   const handleLogoutCancel = () => {

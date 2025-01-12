@@ -78,7 +78,7 @@ function App() {
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
 
-     
+
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
         <meta
@@ -123,7 +123,7 @@ function App() {
 
         <Router>
 
-        <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
+          <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
 
 
           <div className="App">
@@ -137,7 +137,7 @@ function App() {
             <ToasterNotifation />
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<PrivateRoute element={Home} />} />
               <Route path="/signin" element={<SignIn />} />
               <></>
               {/* Protected Routes */}
@@ -175,7 +175,7 @@ function App() {
                 element={
                   <>
                     <Header title={"Restaurant"} />
-                    <Restaurant />
+                    <PrivateRoute element={Restaurant} />
                     <Footer />
                   </>
                 }
@@ -195,7 +195,7 @@ function App() {
                 path="/category/:category"
                 element={
                   <>
-                    <Header title="category" /> <CategoryFilter />
+                    <Header title="category" /> <PrivateRoute element={CategoryFilter} />
                     <Footer />
                   </>
                 }
@@ -205,7 +205,8 @@ function App() {
                 path="/category"
                 element={
                   <>
-                    <Header title="category" /> <Categories />
+                    <Header title="category" />
+                    <PrivateRoute element={Categories} />
                     <Footer />
                   </>
                 }
@@ -347,8 +348,16 @@ function App() {
                   <PrivateRoute element={ChangePassword} />
                   <Footer />
                 </>
+              } />
+
+              <Route path="/signup" element={
+                <>
+                  <SignUp />
+                </>
 
               } />
+
+
               <Route path="/delete-account" element={
                 <>
                   <PrivateRoute element={DeleteAccount} />

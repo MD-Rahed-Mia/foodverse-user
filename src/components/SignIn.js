@@ -19,7 +19,7 @@ const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login, currentUser } = useAuth(); // Use login and currentUser from AuthContext
+  const { login, currentUser, setCurrentUser } = useAuth(); // Use login and currentUser from AuthContext
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -67,7 +67,8 @@ const SignInForm = () => {
 
         if (data?.success) {
           localStorage.setItem("user", JSON.stringify(data));
-          Cookies.set("id", data.id);
+          Cookies.set("id", data.id, { expires: 1 });
+          setCurrentUser(data.id)
           setLoading(false);
           navigate("/");
           toast.success(data?.message);
@@ -179,7 +180,7 @@ const SignInForm = () => {
           {/* Sign Up Link */}
           <div className="text-center text-sm text-gray-500">
             Don't have an account?{" "}
-            <Link to="/" className="text-blue-500 underline">
+            <Link to="/signup" className="text-blue-500 underline">
               Sign Up
             </Link>
           </div>

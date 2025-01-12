@@ -12,6 +12,7 @@ export default function AddressCarousel({
   setAddressLabel,
   setDropCoords,
 }) {
+
   const [selectedKey, setSelectedKey] = useState(null);
 
   return (
@@ -24,11 +25,10 @@ export default function AddressCarousel({
           return value.address !== undefined ? (
             <SwiperSlide
               key={key}
-              className={`cursor-pointer max-w-[80%] rounded-md px-2 py-3 ${
-                isSelected
+              className={`cursor-pointer max-w-[80%] rounded-md px-2 py-3 ${isSelected
                   ? "border-2 border-blue-500"
                   : "border border-gray-300 "
-              }`}
+                }`}
               onClick={() => {
                 setSelectedAddress(value.address);
                 setSelectedKey(key);
@@ -44,10 +44,10 @@ export default function AddressCarousel({
                 <h1 className="capitalize text-lg font-semibold">{key}</h1>
                 {
                   isSelected ? <div className="absolute top-2 right-2 text-blue-500">
-                  <FaCircleCheck />
+                    <FaCircleCheck />
                   </div> : null
                 }
-                <p>Address: {value.address}</p>
+                <p>Address: {value?.address}</p>
               </div>
             </SwiperSlide>
           ) : null;

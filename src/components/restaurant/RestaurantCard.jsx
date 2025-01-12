@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { api_path_url, authToken } from "../../secret";
 import axios from "axios";
 import { FaMotorcycle } from "react-icons/fa6";
+import { useAuth } from "../../contexts/AuthContext";
 
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,8 @@ function RestaurantCard({ detail }) {
   // console.log(detail)
 
   const [deliveryCharge, setDeliveryCharge] = useState(0);
+
+  const { currentAddress } = useAuth();
 
   // check delivery charge
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -33,7 +36,7 @@ function RestaurantCard({ detail }) {
   async function calcdeliveryCharge() {
     const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
     if (cood) {
-      const result = calculateDistance(cood.lat, cood.long, detail?.coordinator.lat, detail?.coordinator.long);
+      const result = calculateDistance(currentAddress.latitude, currentAddress.longitude, detail?.coordinator.lat, detail?.coordinator.long);
       try {
         const { data } = await axios.get(
           `${api_path_url}/charges/active-schedule`,

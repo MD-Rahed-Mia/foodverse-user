@@ -70,7 +70,7 @@ const CheckoutPage = () => {
 
         console.log(data);
         setChargeList(data.charges[0]);
-      } catch (error) {}
+      } catch (error) { }
 
       // if (data.success) {
       //   console.log(`charges is : ${data.charges[0]}`);
@@ -95,9 +95,9 @@ const CheckoutPage = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -161,7 +161,9 @@ const CheckoutPage = () => {
           const resultAfterOneKM = result - 1;
           const othersKMFee = resultAfterOneKM * chargeList?.userOthersKMCharge;
           const totalFee = firstKm + othersKMFee;
+
           console.log(totalFee);
+
           setDeliveryCharge(totalFee);
 
           // calculate rider fee
@@ -198,7 +200,7 @@ const CheckoutPage = () => {
           }
         );
 
-        console.log(data);
+        console.log('restaurant coordinatior: ', data);
 
         if (data.success) {
           setAddressList(data.address);
@@ -481,11 +483,10 @@ const CheckoutPage = () => {
               <button
                 key={amount}
                 onClick={() => handleTipChange(amount)}
-                className={`px-2 py-1 text-sm border rounded-md ${
-                  tip === amount
+                className={`px-2 py-1 text-sm border rounded-md ${tip === amount
                     ? "bg-blue-600 text-white"
                     : "bg-gray-100 text-gray-700"
-                }`}
+                  }`}
               >
                 TK {amount}
               </button>

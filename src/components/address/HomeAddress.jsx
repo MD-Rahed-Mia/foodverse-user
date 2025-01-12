@@ -1,63 +1,112 @@
 import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { api_path_url, authToken } from "../../secret";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { HiLocationMarker } from "react-icons/hi";
-import { FaLocationArrow } from "react-icons/fa";
-import { IoMdArrowDropdownCircle } from "react-icons/io";
+import { FaLocationDot } from "react-icons/fa6";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom"; // Use this hook for navigation in React Router v6
-
+import { FaChevronDown } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 export default function HomeAddress() {
-  const [addressList, setAddressList] = useState(null);
-  const { isFloatingAddressActive, setIsFloatingAddressActive } = useAuth();
-  const navigate = useNavigate(); // React Router v6's navigate hook
+  const { user, currentAddress, setCurrentAddress } = useAuth();
+  const [address, setAddress] = useState(null);
+  const [firstElement, setFirstElement] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-  const { user } = useAuth();
-
-  // Function to check if all address fields are empty
-  function checkIfAddressEmpty(address) {
-    return !address.home && !address.office && !address.others;
-  }
-
-  async function getDeliveryLocationList() {
-    const id = Cookies.get("id");
-    const label = localStorage.getItem("selectedLocation");
-    setAddressList(user?.address[label]?.address)
-  }
 
   useEffect(() => {
-    getDeliveryLocationList();
-  }, []);
+    if (user) {
+      setAddress(user.address);
+    }
+  }, [user]);
+
 
   useEffect(() => {
-    getDeliveryLocationList();
-  }, [isFloatingAddressActive]);
+    if (address) {
+      const fE = Object.keys(address)[0];
+      setFirstElement(fE);
+      setSelectedAddress(fE);
+
+
+
+
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      const defaultAddress = address[firstElement];
+      setCurrentAddress(defaultAddress);
+    }
+  }, [firstElement]);
+
+  // Handle selection of address
+  const handleAddressSelection = (e) => {
+    setSelectedAddress(e.target.value);
+    setCurrentAddress(address[e.target.value])
+    setIsModalOpen(!isModalOpen);
+  };
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsModalOpen(!isModalOpen);
+    }, 20000);
+  }, [])
 
   return (
-    <div className="flex items-center gap-3 w-full justify-between pr-8">
-      <Link to="/AddressManager">
-        <div className="flex items-center">
-          {/* Location Icon */}
-          <HiLocationMarker className="size-6 text-white" />
-
-          <div className="ml-2 text-white text-sm">
-            <span className="block">
-              {addressList?.slice(0, 15)}{addressList?.length > 15 ? "...." : null}
-            </span>
-          </div>
+    <>
+      <div className="flex items-center gap-3 w-full justify-between pr-8" onClick={() => setIsModalOpen(!isModalOpen)}>
+        <div className="flex items-center gap-3 text-white">
+          <FaLocationDot />
+          <h1>
+            {address && selectedAddress && address[selectedAddress]?.address
+              ? address[selectedAddress].address
+              : "No address available"}
+          </h1>
         </div>
-      </Link>
-      <div
-        className="flex text-lg font-bold text-white cursor-pointer items-center"
-        onClick={() => setIsFloatingAddressActive(!isFloatingAddressActive)}
-      >
-        <FaLocationArrow />
-        <IoMdArrowDropdownCircle />
+        <div>
+          <FaChevronDown className="text-xl text-white" />
+        </div>
       </div>
-    </div>
+
+      {/* Modal or dropdown for selecting an address */}
+      {
+        isModalOpen ? <div className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-60 z-50">
+          <div className="absolute w-full min-h-[350px] p-8 bg-white bottom-0 left-0">
+
+            <div>
+              <ImCross className="absolute top-2 right-2 text-2xl text-orange-600" onClick={() => setIsModalOpen(!isModalOpen)} />
+            </div>
+
+            <h1>Please select your address</h1>
+            <div>
+              {address &&
+                Object.keys(address).map((key) => (
+                  <div className="border py-2 px-3 mt-2">
+                    <div key={key} className="flex items-center gap-2 ">
+                      <input
+                        type="radio"
+                        id={key}
+                        name="address"
+                        value={key}
+                        checked={selectedAddress === key}
+                        onChange={handleAddressSelection}
+                      />
+                      <label htmlFor={key} className="text-xl">
+                        {address[key]?.label || `Label for ${key}`}
+                      </label>
+                    </div>
+                    <div className="ml-8 text-sm text-gray-500 font-semibold">
+                      <h1>Name: {address[key]?.name}</h1>
+                      <h1>Address: {address[key]?.address}</h1>
+                      <h1>Phone : {address[key]?.phoneNumber}</h1>
+                    </div>
+
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div> : null
+      }
+    </>
   );
 }
