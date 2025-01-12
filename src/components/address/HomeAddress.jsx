@@ -24,17 +24,15 @@ export default function HomeAddress() {
       const fE = Object.keys(address)[0];
       setFirstElement(fE);
       setSelectedAddress(fE);
-
-
-
-
     }
   }, [address]);
 
   useEffect(() => {
     if (address) {
-      const defaultAddress = address[firstElement];
-      setCurrentAddress(defaultAddress);
+      if (currentAddress === null) {
+        const defaultAddress = address[firstElement];
+        setCurrentAddress(defaultAddress);
+      }
     }
   }, [firstElement]);
 
@@ -58,9 +56,10 @@ export default function HomeAddress() {
         <div className="flex items-center gap-3 text-white">
           <FaLocationDot />
           <h1>
-            {address && selectedAddress && address[selectedAddress]?.address
-              ? address[selectedAddress].address
-              : "No address available"}
+            {
+              currentAddress && currentAddress.address
+            }
+
           </h1>
         </div>
         <div>
@@ -88,7 +87,7 @@ export default function HomeAddress() {
                         id={key}
                         name="address"
                         value={key}
-                        checked={selectedAddress === key}
+                        checked={currentAddress.label === key}
                         onChange={handleAddressSelection}
                       />
                       <label htmlFor={key} className="text-xl">

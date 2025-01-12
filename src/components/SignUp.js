@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+
+const formInitialState = {
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    terms: false,
+}
 
 const SignUpForm = () => {
-    const [formData, setFormData] = useState({
-        fullName: '',
-        phoneNumber: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        terms: false,
-    });
+    const [formData, setFormData] = useState(formInitialState);
 
     const [errorMessage, setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for toggling confirm password visibility
+
+    const navigate = useNavigate();
 
     // Handle input changes
     const handleChange = (e) => {
@@ -76,11 +81,15 @@ const SignUpForm = () => {
                         password: formData.password,
                     })
                 });
-    
+
                 const data = await response.json();
-    
+
+                console.log(data)
+
                 if (response.ok) {
                     alert('Registration successful!');
+                    setFormData(formInitialState)
+                    navigate("/signin")
                 } else {
                     if (data.message && data.message.includes("Already register this email")) {
                         setErrorMessage('This email is already registered. Please use a different email.');
@@ -94,7 +103,7 @@ const SignUpForm = () => {
             }
         }
     };
-    
+
 
     // Toggle password visibility
     const togglePasswordVisibility = () => {

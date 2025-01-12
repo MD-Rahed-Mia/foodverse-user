@@ -5,7 +5,7 @@ import { api_path_url, authToken } from "../secret";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import Loading from "./Loading";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const AddressManager = () => {
@@ -21,6 +21,9 @@ const AddressManager = () => {
   });
   const mapRef = useRef(null);
 
+  // navigate
+  const navigate = useNavigate();
+
 
 
   const { user, setUser } = useAuth();
@@ -29,8 +32,6 @@ const AddressManager = () => {
   const [loading, setLoading] = useState(null);
 
   const mapStyles = { height: "300px", width: "100%" };
-
-  // Fetch addresses from backend when the component mounts
 
 
   const fetchAddresses = async () => {
@@ -128,6 +129,12 @@ const AddressManager = () => {
     try {
       const id = Cookies.get("id");
 
+
+      if (newAddress.phoneNumber.length < 11) {
+        toast.error("Invalid Phone Number.")
+        return;
+      }
+
       //  console.log(newAddress);
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/user/update-address?id=${id}`,
@@ -145,6 +152,7 @@ const AddressManager = () => {
 
       if (data.success) {
         toast.success(data.message);
+        navigate("/")
       } else {
         toast.error(data.message);
       }

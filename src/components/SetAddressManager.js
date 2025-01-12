@@ -3,6 +3,8 @@ import { LoadScript, GoogleMap } from "@react-google-maps/api";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 
 // Utility to calculate distance between two lat/lng points
 function calculateDistance(lat1, lng1, lat2, lng2) {
@@ -28,6 +30,9 @@ function SetAddressManager() {
     lng: 91.097044,
   });
 
+
+  const [loading, setLoading] = useState(null);
+
   const [newAddress, setNewAddress] = useState({
     label: "home",
     latitude: 22.865322,
@@ -36,6 +41,9 @@ function SetAddressManager() {
     phoneNumber: "",
     address: "",
   });
+
+  // navigate
+  const navigate = useNavigate();
 
   const [isZone, setIsZone] = useState(null);
 
@@ -60,9 +68,9 @@ function SetAddressManager() {
     }
   };
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   getCurrentLocation();
+  // }, []);
 
   const handleMapIdle = () => {
     if (mapRef.current) {
@@ -135,6 +143,7 @@ function SetAddressManager() {
 
   const findLocation = (event) => {
     event.preventDefault();
+    setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -144,13 +153,14 @@ function SetAddressManager() {
           };
           mapRef.current.setCenter(userLocation);
           setCoordinates(userLocation);
+          setLoading(false);
         },
         () => {
-          alert("Geolocation failed or is not supported by your browser.");
+          toast.error("Geolocation failed or is not supported by your browser.")
         }
       );
     } else {
-      alert("Geolocation is not supported by your browser.");
+      toast.error("Geolocation failed or is not supported by your browser.")
     }
   };
 
@@ -160,6 +170,16 @@ function SetAddressManager() {
   const updateUserAddress = async () => {
     try {
       const userId = JSON.parse(localStorage.getItem("user"))?.id;
+
+      if (newAddress.phoneNumber.length < 11) {
+        toast.error("Invalid phone number.")
+        return;
+      }
+
+
+
+
+
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/user/update-address?id=${userId}`,
         newAddress,
@@ -172,7 +192,8 @@ function SetAddressManager() {
       );
       if (response.data.success) {
         alert("Address updated successfully!");
-        setUser((prev) => ({...prev, address: {...prev.address, ...response.data.address}}))
+        setUser((prev) => ({ ...prev, address: { ...prev.address, [newAddress.label]: newAddress } }))
+        navigate("/");
 
       } else {
         alert("Failed to update address.");
@@ -197,8 +218,8 @@ function SetAddressManager() {
           <button
             type="button"
             className={`px-4 py-2 rounded-md ${newAddress.label === "home"
-                ? "bg-blue-400 text-white"
-                : "bg-gray-200"
+              ? "bg-blue-400 text-white"
+              : "bg-gray-200"
               }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "home" }))
@@ -209,8 +230,8 @@ function SetAddressManager() {
           <button
             type="button"
             className={`px-4 py-2 rounded-md ${newAddress.label === "office"
-                ? "bg-blue-400 text-white"
-                : "bg-gray-200"
+              ? "bg-blue-400 text-white"
+              : "bg-gray-200"
               }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "office" }))
@@ -221,8 +242,8 @@ function SetAddressManager() {
           <button
             type="button"
             className={`px-4 py-2 rounded-md ${newAddress.label === "others"
-                ? "bg-blue-400 text-white"
-                : "bg-gray-200"
+              ? "bg-blue-400 text-white"
+              : "bg-gray-200"
               }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "others" }))
@@ -274,21 +295,25 @@ function SetAddressManager() {
             Find Location
           </button>
 
-          <LoadScript googleMapsApiKey="AIzaSyBbE_BV395ODtFKApBX_oK0KselqP0Tjcs">
-            <GoogleMap
-              id="map"
-              mapContainerStyle={mapStyles}
-              center={coordinates}
-              zoom={15}
-              onLoad={onLoad}
-              onIdle={handleMapIdle}
-              options={{
-                gestureHandling: "greedy",
-                fullscreenControl: false,
-                streetViewControl: false,
-              }}
-            ></GoogleMap>
-          </LoadScript>
+          {
+            loading ? <div className="w-full flex items-center justify-center">
+              <Loading />
+            </div> : <LoadScript googleMapsApiKey="AIzaSyBbE_BV395ODtFKApBX_oK0KselqP0Tjcs">
+              <GoogleMap
+                id="map"
+                mapContainerStyle={mapStyles}
+                center={coordinates}
+                zoom={15}
+                onLoad={onLoad}
+                onIdle={handleMapIdle}
+                options={{
+                  gestureHandling: "greedy",
+                  fullscreenControl: false,
+                  streetViewControl: false,
+                }}
+              ></GoogleMap>
+            </LoadScript>
+          }
 
           <div className="bg-white rounded-lg shadow-lg p-4 text-center flex items-center justify-between">
             <p>Lat: {newAddress.latitude.toFixed(6)}</p>
@@ -299,8 +324,8 @@ function SetAddressManager() {
           type="submit"
           disabled={isZone ? false : true}
           className={`${newAddress.label === ""
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600"
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600"
             } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
         >
           {!isZone ? "Service Not Available" : "Submit"}
