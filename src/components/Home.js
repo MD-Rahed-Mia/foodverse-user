@@ -19,6 +19,7 @@ import NearByRestaurant from "./home/NearByRestaurant";
 import BestDeals from "./home/BestDeals";
 import AddressComponent from "./home/AddressComponent";
 import { useAuth } from "../contexts/AuthContext";
+import RestaurantScroller from "./home/RestaurantScroller";
 
 function Home() {
 
@@ -210,6 +211,14 @@ function Home() {
           <h1 className="text-lg px-4 font-semibold">Near by foods</h1>
           <NearByFoods />
         </div>
+
+        <div className="w-full my-3 mb-3">
+          <h1 className="text-lg px-4 font-semibold">All Restaurant</h1>
+          <RestaurantScroller />
+
+        </div>
+
+
 
 
         <div className="py-6"></div>

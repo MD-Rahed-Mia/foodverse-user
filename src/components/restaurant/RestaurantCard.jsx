@@ -7,6 +7,7 @@ import { api_path_url, authToken } from "../../secret";
 import axios from "axios";
 import { FaMotorcycle } from "react-icons/fa6";
 import { useAuth } from "../../contexts/AuthContext";
+import { FaRegStar } from "react-icons/fa6";
 
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);

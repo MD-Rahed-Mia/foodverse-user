@@ -192,7 +192,10 @@ function SetAddressManager() {
       );
       if (response.data.success) {
         alert("Address updated successfully!");
+
+        
         setUser((prev) => ({ ...prev, address: { ...prev.address, [newAddress.label]: newAddress } }))
+        console.log(user)
         navigate("/");
 
       } else {

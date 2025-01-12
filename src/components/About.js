@@ -36,7 +36,7 @@ const LogoutConfirmationModal = ({ show, onClose, onConfirm }) => {
 
 const Profile = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
@@ -68,22 +68,24 @@ const Profile = () => {
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-lg">
           <div className="flex items-center">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-              <svg
-                className="w-16 text-purple-600"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              {
+                user?.profileImage !== undefined ? <img src={user?.profileImage} className="w-16 h-16 rounded-full" alt="user-profile" /> : <svg
+                  className="w-16 text-purple-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              }
             </div>
             <div className="ml-4 text-white">
-              <h2 className="text-2xl font-bold">Md Ibrahim</h2>
-              <p>18 May, 2024</p>
+              <h2 className="text-2xl font-bold capitalize">{user?.fullName}</h2>
+              <p>{user?.phoneNumber}</p>
             </div>
           </div>
         </div>

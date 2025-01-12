@@ -26,7 +26,7 @@ export default function PopularItems() {
     }
 
     return (
-        <div className='max-w-full flex custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
+        <div className='max-w-full lg:w-4/5 lg:gap-8 mx-auto flex lg:grid lg:grid-cols-4 custom-scrollbar no-scrollbar scroll-smooth py-4 overflow-x-scroll gap-4 px-2'>
             {value && value.map((item, index) => (
                 <MenuCard key={index} detail={item} />
             ))}
