@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import OtpComponent from './otp/OtpComponent';
+import toast from 'react-hot-toast';
 
 
 const formInitialState = {
@@ -67,18 +69,15 @@ const SignUpForm = () => {
         e.preventDefault();
         if (validateForm()) {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/user/register`, {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/user/send-otp`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': process.env.REACT_APP_API_TOKEN
                     },
                     body: JSON.stringify({
-                        fullName: formData.fullName,
-                        email: formData.email,
                         phoneNumber: formData.phoneNumber,
-                        address: "some address",
-                        password: formData.password,
+                        email: formData.email
                     })
                 });
 
@@ -86,16 +85,12 @@ const SignUpForm = () => {
 
                 console.log(data)
 
-                if (response.ok) {
-                    alert('Registration successful!');
+                if (data.success) {
+                    // alert('Registration successful!');
                     setFormData(formInitialState)
-                    navigate("/signin")
+                    navigate("/otp", { state: formData })
                 } else {
-                    if (data.message && data.message.includes("Already register this email")) {
-                        setErrorMessage('This email is already registered. Please use a different email.');
-                    } else {
-                        setErrorMessage(data.message || 'Something went wrong. Please try again.');
-                    }
+                    toast.error(data.message);
                 }
             } catch (error) {
                 console.error('Network error:', error);
@@ -117,6 +112,8 @@ const SignUpForm = () => {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="w-full max-w-md bg-white p-6 space-y-6">
+
+                {/* <OtpComponent phoneNumber={formData.phoneNumber} /> */}
                 {/* Logo */}
                 <div className="text-center">
                     <img src="./img/foodverselogo.png" alt="Food Verse Logo" className="mx-auto w-40 h-40" />
@@ -134,7 +131,6 @@ const SignUpForm = () => {
                             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         />
                     </div>
-
                     <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 focus-within:ring-2 focus-within:ring-blue-300">
                         <span className="inline-block pr-2 py-1 rounded text-purple-500">+880</span>
                         <input

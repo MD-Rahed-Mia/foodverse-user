@@ -56,6 +56,7 @@ import HelpAndSupport from "./components/privacy-policy/HelpAndSupport.jsx";
 import SetupAddress from "./pages/SetupAddress.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import DeleteAccount from "./pages/DeleteAccount.jsx";
+import OtpVerifyPage from "./pages/OtpVerifyPage.jsx";
 
 function App() {
   const socket = useSocket();
@@ -353,6 +354,13 @@ function App() {
               <Route path="/signup" element={
                 <>
                   <SignUp />
+                </>
+
+              } />
+
+              <Route path="/otp" element={
+                <>
+                  <OtpVerifyPage />
                 </>
 
               } />

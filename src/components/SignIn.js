@@ -106,7 +106,7 @@ const SignInForm = () => {
           {/* Email */}
           <div>
             <input
-              type="email"
+              type="text"
               name="email"
               value={formData.email}
               onChange={handleChange}
