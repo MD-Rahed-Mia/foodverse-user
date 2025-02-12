@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Item from "antd/es/list/Item";
 import { api_path_url, authToken } from "../secret";
 import { useSocket } from "../contexts/SocketIo";
+import convertTimeIntoLocal from "../helpers/convertTime";
 
 const LiveChatWithRestaurant = () => {
   const [messages, setMessages] = useState([]);
@@ -38,6 +39,8 @@ const LiveChatWithRestaurant = () => {
       setMessages((prev) => [...prev, message]);
       setInput("");
 
+      console.log(message);
+
       // if (socket) {
       //   socket.on("messageSentSuccessful", (data) => {
       //     setMessages((prev) => [...prev, message]);
@@ -66,7 +69,7 @@ const LiveChatWithRestaurant = () => {
             headers: {
               "x-auth-token": authToken,
             },
-          },
+          }
         );
 
         console.log(data);
@@ -108,12 +111,11 @@ const LiveChatWithRestaurant = () => {
       {/* Fullscreen chat container */}
       <div className="w-full h-full md:max-w-2xl md:h-5/6 bg-white shadow-lg rounded-lg flex flex-col">
         {/* Chat Header */}
-        <div className="bg-blue-600 p-4 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-white">Live Chat with Restaurant</h2>
-          <Link
-            to={"/order/active"}
-            className="text-white focus:outline-none"
-          >
+        <div className="bg-blue-600 px-4 py-2 rounded-t-lg flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-white">
+            Live Chat with Restaurant
+          </h2>
+          <Link to={"/order/active"} className="text-white focus:outline-none">
             {/* Add a logout or close button if needed */}
             <svg
               className="w-6 h-6"
@@ -140,13 +142,17 @@ const LiveChatWithRestaurant = () => {
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`p-3 mb-3 rounded-lg max-w-xs break-words ${
+              className={`px-3 py-1 mb-3 rounded-lg max-w-xs break-words ${
                 msg.sender === "user"
                   ? "bg-blue-600 text-white self-end ml-auto"
                   : "bg-gray-300 text-gray-800"
               }`}
             >
               {msg.message}
+
+              <span className="text-[12px] text-right block ">
+                {convertTimeIntoLocal(msg.createAt)}
+              </span>
             </div>
           ))}
         </div>

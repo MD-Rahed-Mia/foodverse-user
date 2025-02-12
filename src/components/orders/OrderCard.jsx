@@ -27,7 +27,7 @@ export default function OrderCard({ detail }) {
     setTotalAmount(total + Number(detail?.addonTotal));
 
     // log detail
-    console.log(`details for menu : `, detail);
+    //  console.log(`details for menu : `, detail);
   }, [detail]);
 
   const socket = useSocket();
@@ -35,9 +35,7 @@ export default function OrderCard({ detail }) {
   if (socket) {
     //  console.log("socket is connected.");
 
-    socket.on("recieveMessage", (data) => {
-      console.log(data);
-    });
+    socket.on("recieveMessage", (data) => {});
   }
 
   // console.log(detail);
@@ -57,12 +55,11 @@ export default function OrderCard({ detail }) {
   }, [detail]);
 
   useEffect(() => {
-    console.log(addons);
+    //  console.log(addons);
   }, [addons]);
 
   return (
     <div className="w-[90%] mx-auto text-sm  bg-white min-h-[300px] relative shadow-md border rounded-md p-4">
-      {/* alert icon */}
       <div className="absolute top-2 right-4 cursor-pointer text-orange-400">
         <IoMdAlert />
       </div>
@@ -83,7 +80,7 @@ export default function OrderCard({ detail }) {
       </h1>
 
       <h1 className="text-gray-500 font-bold">
-        Delivery- <span>{detail.dropLocation}</span>
+        Drop- <span>{detail.dropLocation}</span>
       </h1>
 
       <div>
@@ -198,7 +195,8 @@ export default function OrderCard({ detail }) {
         Discount- <span>BDT {detail.discount}</span>
       </h1>
       <h1>
-        Delivery charge- <span>BDT {detail.deliveryAmount}</span>
+        Delivery charge-{" "}
+        <span>BDT {detail && detail.deliveryAmount.toFixed()}</span>
       </h1>
       <h1>
         Tip- <span>BDT {detail.tip}</span>
@@ -207,10 +205,12 @@ export default function OrderCard({ detail }) {
         Payable-{" "}
         <span className="text-2xl font-semibold">
           BDT{" "}
-          {totalAmount.toFixed() -
+          {(
+            totalAmount -
             Number(detail.discount) +
             Number(detail.deliveryAmount) +
-            Number(detail.tip)}
+            Number(detail.tip)
+          ).toFixed()}
         </span>
       </h1>
       {/* <div>
@@ -223,34 +223,6 @@ export default function OrderCard({ detail }) {
         {detail.status === "delivered" ? <ReviewOrder detail={detail} /> : null}
       </div>
 
-      {/* <div
-        className="px-3 py-1 rounded-full cursor-pointer bg-blue-500 text-white"
-        onClick={() => setRiderChatBoxOpen(!riderChatBoxOpen)}
-      >
-        chat with rider
-      </div> */}
-
-      {/* {detail?.status === "accept by restaurant" && isChatboxOpen ? (
-        <ChatBoxWithRestaurant
-          setIsChatBoxOpen={setIsChatBoxOpen}
-          isChatboxOpen={isChatboxOpen}
-          orderId={detail._id}
-          restaurantId={detail.restaurantId}
-        />
-      ) : null} */}
-
-      {/* {riderChatBoxOpen ? (
-        <ChatBoxWithRider
-          setRiderChatBoxOpen={setRiderChatBoxOpen}
-          riderChatBoxOpen={riderChatBoxOpen}
-          orderId={detail._id}
-          riderId={detail.riderId}
-        />
-      ) : null} */}
-
-      {/* <Link to={`/live-chat/${detail.restaurantId}/${detail._id}`}>
-        Chat with restaurant
-      </Link> */}
       {detail.status === "accept by restaurant" ||
       detail.status === "ready for pickup" ||
       detail.status === "accept by rider" ? (
@@ -329,10 +301,10 @@ function ChatBoxWithRestaurant({
   const sendMessage = () => {
     const id = Cookies.get("id");
 
-    console.log(restaurantId);
+    // console.log(restaurantId);
 
     if (!id) {
-      console.log("User ID not found.");
+      //  console.log("User ID not found.");
       return;
     }
 
@@ -358,7 +330,7 @@ function ChatBoxWithRestaurant({
     if (socket) {
       socket.on("sendToUserOrRestaurant", (data) => {
         const parseData = JSON.parse(data);
-        console.log(parseData);
+        //    console.log(parseData);
         setMessages((prev) => [...prev, parseData]);
       });
     }
@@ -449,13 +421,13 @@ function ChatBoxWithRider({
   // Fetch previous messages when the component mounts
   useEffect(() => {
     async function getChat() {
-      console.log(orderId);
+      //   console.log(orderId);
       try {
         const { data } = await axios.get(
           `${api_path_url}/chat/user/rider/chat?id=${orderId}`
         );
 
-        console.log(data);
+        //   console.log(data);
 
         if (data.success) {
           setMessages(data.message); // Populate the messages state
@@ -486,10 +458,8 @@ function ChatBoxWithRider({
   const sendMessage = () => {
     const id = Cookies.get("id");
 
-    console.log(riderId);
-
     if (!id) {
-      console.log("User ID not found.");
+      // console.log("User ID not found.");
       return;
     }
 
@@ -515,7 +485,7 @@ function ChatBoxWithRider({
     if (socket) {
       socket.on("sendSmsToUser", (data) => {
         const parseData = JSON.parse(data);
-        console.log(parseData);
+
         setMessages((prev) => [...prev, parseData]);
       });
     }
@@ -556,7 +526,7 @@ function ChatBoxWithRider({
                         : "text-left bg-blue-300 text-white"
                     } w-full py-1 px-4 my-1 rounded-full text-orange-700`}
                   >
-                    {msg.message}
+                    {}
                   </span>
                 </span>
               ))}

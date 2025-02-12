@@ -15,6 +15,7 @@ const CartProvider = ({ children }) => {
 
   // total for cart
   const [cartTotal, setCartTotal] = useState(0);
+  const [activeOrderCount, setActiveOrderCount] = useState(0);
 
   // addons
   const [addonTotal, setAddonTotal] = useState(0);
@@ -44,11 +45,8 @@ function handleRemoveFavorite(id) {
   localStorage.setItem("favoriteRestaurant", JSON.stringify(filterItem));
 }
 
-
-
-
   // discount
-  const [discount, setDiscount] = useState(20);
+  const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
     const total = cart.reduce((total, item, index) => {
@@ -184,7 +182,9 @@ function handleRemoveFavorite(id) {
         discount,
         handleAddToFavorite,
         favoriteMenus,
-        handleRemoveFavorite
+        handleRemoveFavorite,
+        activeOrderCount,
+        setActiveOrderCount
       }}
     >
       {children}

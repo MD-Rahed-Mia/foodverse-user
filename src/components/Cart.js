@@ -160,10 +160,10 @@ function Cart() {
               <p className="text-gray-700">Sub total</p>
               <p>TK {cartTotal} </p>
             </div>
-            <div className="flex justify-between py-2">
+            {/* <div className="flex justify-between py-2">
               <p className="text-gray-700">Discount</p>
               <p>TK {discount}</p>
-            </div>
+            </div> */}
             <div className="flex justify-between py-2">
               <p className="text-gray-700">Addons</p>
               <p>TK {addonTotal}</p>

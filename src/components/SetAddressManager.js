@@ -25,11 +25,7 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
 }
 
 function SetAddressManager() {
-  const [coordinates, setCoordinates] = useState({
-    lat: 22.865322,
-    lng: 91.097044,
-  });
-
+  const [coordinates, setCoordinates] = useState(null);
 
   const [loading, setLoading] = useState(null);
 
@@ -57,20 +53,26 @@ function SetAddressManager() {
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCoordinates({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => {
+          toast.error("Location permission denied.");
+        }
+      );
     } else {
-      toast.error("Geolocation not found. Please try again.");
+      toast.error("Geolocation is not supported by this browser.");
     }
   };
+  
 
-  // useEffect(() => {
-  //   getCurrentLocation();
-  // }, []);
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   const handleMapIdle = () => {
     if (mapRef.current) {
@@ -156,14 +158,15 @@ function SetAddressManager() {
           setLoading(false);
         },
         () => {
-          toast.error("Geolocation failed or is not supported by your browser.")
+          toast.error(
+            "Geolocation failed or is not supported by your browser."
+          );
         }
       );
     } else {
-      toast.error("Geolocation failed or is not supported by your browser.")
+      toast.error("Geolocation failed or is not supported by your browser.");
     }
   };
-
 
   const { user, setUser } = useAuth();
 
@@ -172,13 +175,9 @@ function SetAddressManager() {
       const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
       if (newAddress.phoneNumber.length < 11) {
-        toast.error("Invalid phone number.")
+        toast.error("Invalid phone number.");
         return;
       }
-
-
-
-
 
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/user/update-address?id=${userId}`,
@@ -193,11 +192,12 @@ function SetAddressManager() {
       if (response.data.success) {
         alert("Address updated successfully!");
 
-        
-        setUser((prev) => ({ ...prev, address: { ...prev.address, [newAddress.label]: newAddress } }))
-        console.log(user)
+        setUser((prev) => ({
+          ...prev,
+          address: { ...prev.address, [newAddress.label]: newAddress },
+        }));
+        console.log(user);
         navigate("/");
-
       } else {
         alert("Failed to update address.");
       }
@@ -220,10 +220,11 @@ function SetAddressManager() {
         <div className="flex space-x-4 mb-4 justify-center">
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${newAddress.label === "home"
-              ? "bg-blue-400 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "home"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "home" }))
             }
@@ -232,10 +233,11 @@ function SetAddressManager() {
           </button>
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${newAddress.label === "office"
-              ? "bg-blue-400 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "office"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "office" }))
             }
@@ -244,10 +246,11 @@ function SetAddressManager() {
           </button>
           <button
             type="button"
-            className={`px-4 py-2 rounded-md ${newAddress.label === "others"
-              ? "bg-blue-400 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              newAddress.label === "others"
+                ? "bg-blue-400 text-white"
+                : "bg-gray-200"
+            }`}
             onClick={() =>
               setNewAddress((prev) => ({ ...prev, label: "others" }))
             }
@@ -298,10 +301,12 @@ function SetAddressManager() {
             Find Location
           </button>
 
-          {
-            loading ? <div className="w-full flex items-center justify-center">
+          {coordinates === null ? (
+            <div className="w-full flex items-center justify-center">
               <Loading />
-            </div> : <LoadScript googleMapsApiKey="AIzaSyBbE_BV395ODtFKApBX_oK0KselqP0Tjcs">
+            </div>
+          ) : (
+            <LoadScript googleMapsApiKey="AIzaSyBbE_BV395ODtFKApBX_oK0KselqP0Tjcs">
               <GoogleMap
                 id="map"
                 mapContainerStyle={mapStyles}
@@ -316,7 +321,7 @@ function SetAddressManager() {
                 }}
               ></GoogleMap>
             </LoadScript>
-          }
+          )}
 
           <div className="bg-white rounded-lg shadow-lg p-4 text-center flex items-center justify-between">
             <p>Lat: {newAddress.latitude.toFixed(6)}</p>
@@ -326,10 +331,11 @@ function SetAddressManager() {
         <button
           type="submit"
           disabled={isZone ? false : true}
-          className={`${newAddress.label === ""
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-600"
-            } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
+          className={`${
+            newAddress.label === ""
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600"
+          } text-white text-lg disabled:bg-gray-400 font-bold w-full my-3 px-4 py-3 rounded-xl text-center`}
         >
           {!isZone ? "Service Not Available" : "Submit"}
         </button>

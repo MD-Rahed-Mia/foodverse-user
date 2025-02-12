@@ -38,13 +38,7 @@ const CheckoutPage = () => {
   //payment status
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [deliveryChargeLoading, setDeliveryChargeLoading] = useState(null);
-
-  // const queryParams = new URLSearchParams(location.search);
-  // const passedSubtotal = parseFloat(queryParams.get("subtotal")) || 0; // Retrieve subtotal from URL query parameters
-  // console.log(passedSubtotal);
-
   const { cartTotal, discount, addonTotal } = useCartContext();
-
   const [loadingAddress, setLoadingAddress] = useState(null);
   const [addressList, setAddressList] = useState(null);
 
@@ -70,16 +64,10 @@ const CheckoutPage = () => {
 
         console.log(data);
         setChargeList(data.charges[0]);
-      } catch (error) { }
-
-      // if (data.success) {
-      //   console.log(`charges is : ${data.charges[0]}`);
-      //   setChargeList(data.charges[0]);
-      // } else {
-      //   toast.error("something went wrong. Please try again.");
-      // }
+      } catch (error) {
+        console.log("fetch charge list error : ", error);
+      }
     }
-
     getChargeList();
   }, []);
 
@@ -95,9 +83,9 @@ const CheckoutPage = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -109,7 +97,6 @@ const CheckoutPage = () => {
       setDeliveryChargeLoading(true);
       async function getRestaurantCoordinator() {
         const localRestaurantId = localStorage.getItem("cartRest");
-
         try {
           const { data } = await axios.get(
             `${api_path_url}/restaurant/address/coordinator?id=${localRestaurantId}`,
@@ -120,7 +107,7 @@ const CheckoutPage = () => {
             }
           );
 
-          console.log(data);
+          console.log("user coordinator : ", data);
 
           if (data.success) {
             return {
@@ -162,17 +149,20 @@ const CheckoutPage = () => {
           const othersKMFee = resultAfterOneKM * chargeList?.userOthersKMCharge;
           const totalFee = firstKm + othersKMFee;
 
-          console.log(totalFee);
+          // console.log(totalFee);
 
           setDeliveryCharge(totalFee);
 
           // calculate rider fee
           const ridersFeeForOthersKM =
             resultAfterOneKM * chargeList?.riderOthersKMCharge;
-          const riderTotalFee = 20 + ridersFeeForOthersKM;
+          const riderTotalFee = Number(
+            chargeList.riderFirstKMCharge + ridersFeeForOthersKM
+          ).toFixed();
+
           setRiderFee(riderTotalFee);
 
-          console.log(`rider fee for delivery : ${riderTotalFee}`);
+          //   console.log(`rider fee for delivery : ${riderTotalFee}`);
         }
         setDeliveryChargeLoading(false);
       }
@@ -200,7 +190,7 @@ const CheckoutPage = () => {
           }
         );
 
-        console.log('restaurant coordinatior: ', data);
+        console.log("restaurant coordinatior: ", data);
 
         if (data.success) {
           setAddressList(data.address);
@@ -483,10 +473,11 @@ const CheckoutPage = () => {
               <button
                 key={amount}
                 onClick={() => handleTipChange(amount)}
-                className={`px-2 py-1 text-sm border rounded-md ${tip === amount
+                className={`px-2 py-1 text-sm border rounded-md ${
+                  tip === amount
                     ? "bg-blue-600 text-white"
                     : "bg-gray-100 text-gray-700"
-                  }`}
+                }`}
               >
                 TK {amount}
               </button>
@@ -555,10 +546,10 @@ const CheckoutPage = () => {
             <p>TK {deliveryCharge.toFixed()}</p>
           </div>
 
-          <div className="flex justify-between py-2">
+          {/* <div className="flex justify-between py-2">
             <p className="text-gray-700">Discount</p>
             <p>TK {discount}</p>
-          </div>
+          </div> */}
         </div>
       </div>
       {/* Order Summary and Place Order */}

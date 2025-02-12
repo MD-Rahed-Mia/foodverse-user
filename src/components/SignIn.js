@@ -68,7 +68,7 @@ const SignInForm = () => {
         if (data?.success) {
           localStorage.setItem("user", JSON.stringify(data));
           Cookies.set("id", data.id, { expires: 1 });
-          setCurrentUser(data.id)
+          setCurrentUser(data.id);
           setLoading(false);
           navigate("/");
           toast.success(data?.message);
@@ -147,7 +147,7 @@ const SignInForm = () => {
               <label className="text-gray-500 text-sm">Remember Me</label>
             </div>
             <div className="pr-2">
-              <Link to="#">
+              <Link to="/forget-password">
                 <p className="text-blue-600">Forget Password?</p>
               </Link>
             </div>

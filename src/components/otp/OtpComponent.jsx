@@ -24,7 +24,7 @@ function OtpComponent({ userInfo }) {
     async function signUpUser(information) {
         try {
 
-            console.log(information);
+          //  console.log(information);
             const response = await fetch(`${process.env.REACT_APP_API_URL}/user/register`, {
                 method: 'POST',
                 headers: {

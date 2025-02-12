@@ -28,7 +28,7 @@ function RatingPage() {
           }
         );
 
-        console.log(data);
+     //   console.log('total reviews are : ', data);
 
         if (data.success) {
           setRestaurant(data.restaurant);
@@ -96,9 +96,13 @@ function RatingPage() {
                 {restaurant?.name}
               </h1>
               <p className="text-sm text-gray-500">
-                0.2km away |{" "}
+                {/* 0.2km away |{" "}
                 <span className="text-gray-800 font-medium">Free delivery</span>{" "}
-                | Tk 500 Minimum
+                | Tk 500 Minimum */}
+
+                {
+                  restaurant && restaurant.address
+                }
               </p>
             </div>
           </div>

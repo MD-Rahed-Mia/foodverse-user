@@ -24,15 +24,12 @@ const AddressManager = () => {
   // navigate
   const navigate = useNavigate();
 
-
-
   const { user, setUser } = useAuth();
 
   // loading
   const [loading, setLoading] = useState(null);
 
   const mapStyles = { height: "300px", width: "100%" };
-
 
   const fetchAddresses = async () => {
     const id = Cookies.get("id");
@@ -71,7 +68,6 @@ const AddressManager = () => {
   };
 
   useEffect(() => {
-
     fetchAddresses();
   }, []);
 
@@ -99,8 +95,23 @@ const AddressManager = () => {
     setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
   };
 
+  const onLoad = (mapInstance) => {
+    mapRef.current = mapInstance;
+    addCenterMarker(); // Ensure the marker is added when the map loads
+  };
+
   const addCenterMarker = () => {
+    const mapContainer = document.getElementById("map");
+    if (!mapContainer) {
+      console.error("Map container not found!");
+      return;
+    }
+
+    const existingMarker = document.getElementById("center-marker");
+    if (existingMarker) existingMarker.remove(); // Prevent duplicates
+
     const centerMarker = document.createElement("div");
+    centerMarker.id = "center-marker";
     centerMarker.style.background = 'url("/img/Location.png") no-repeat center';
     centerMarker.style.backgroundSize = "contain";
     centerMarker.style.height = "80px";
@@ -110,7 +121,7 @@ const AddressManager = () => {
     centerMarker.style.left = "50%";
     centerMarker.style.marginTop = "-40px";
     centerMarker.style.marginLeft = "-40px";
-    document.getElementById("map").appendChild(centerMarker);
+    mapContainer.appendChild(centerMarker);
   };
 
   const resetNewAddress = () => {
@@ -129,9 +140,8 @@ const AddressManager = () => {
     try {
       const id = Cookies.get("id");
 
-
       if (newAddress.phoneNumber.length < 11) {
-        toast.error("Invalid Phone Number.")
+        toast.error("Invalid Phone Number.");
         return;
       }
 
@@ -152,7 +162,7 @@ const AddressManager = () => {
 
       if (data.success) {
         toast.success(data.message);
-        navigate("/")
+        navigate("/");
       } else {
         toast.error(data.message);
       }
@@ -229,10 +239,10 @@ const AddressManager = () => {
     if (data.success) {
       toast.success(data.message);
       const address = user?.address;
-      delete address[label]
+      delete address[label];
       setUser((prev) => ({ ...prev, address: { ...address } }));
 
-      fetchAddresses()
+      fetchAddresses();
     } else {
       toast.error(data.message);
     }
@@ -261,7 +271,7 @@ const AddressManager = () => {
   };
 
   // useEffect(() => {
-  //   console.log(addresses);
+  //   console.log('address is : ', addresses);
   // }, [addresses]);
 
   return (
@@ -321,21 +331,14 @@ const AddressManager = () => {
                           <p>{addr?.phoneNumber}</p>
                         </div>
 
-                        <div className="flex items-center space-x-2">
-                          {/* {renderIcon(address.label)}
-                  <p className="font-bold text-blue-700">{address.label}:</p> */}
-                          <p>
-                            {/* {address.address.length > 20
-                      ? `${address.address.substring(0, 20)}...`
-                      : address.address} */}
-                          </p>
-                        </div>
+                        <div className="flex items-center space-x-2"></div>
                       </div>
                       <div className="flex flex-row space-x-44 mt-2">
                         <button
                           className="text-white bg-blue-500 rounded-sm font-bold px-2 "
                           onClick={() => {
                             setShowAddressForm(true);
+
                             setNewAddress(() => ({ ...addr }));
                           }}
                         >
@@ -375,30 +378,33 @@ const AddressManager = () => {
           <div className="flex space-x-4 mb-4">
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${newAddress.label === "home"
-                ? "bg-blue-400 text-white"
-                : "bg-gray-200"
-                }`}
+              className={`px-4 py-2 rounded-md ${
+                newAddress.label === "home"
+                  ? "bg-blue-400 text-white"
+                  : "bg-gray-200"
+              }`}
               onClick={() => setNewAddress({ ...newAddress, label: "home" })}
             >
               Home
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${newAddress.label === "office"
-                ? "bg-blue-400 text-white "
-                : "bg-gray-200"
-                }`}
+              className={`px-4 py-2 rounded-md ${
+                newAddress.label === "office"
+                  ? "bg-blue-400 text-white "
+                  : "bg-gray-200"
+              }`}
               onClick={() => setNewAddress({ ...newAddress, label: "office" })}
             >
               Office
             </button>
             <button
               type="button"
-              className={`px-4 py-2 rounded-md ${newAddress.label === "others"
-                ? "bg-blue-400 text-white"
-                : "bg-gray-200"
-                }`}
+              className={`px-4 py-2 rounded-md ${
+                newAddress.label === "others"
+                  ? "bg-blue-400 text-white"
+                  : "bg-gray-200"
+              }`}
               onClick={() => setNewAddress({ ...newAddress, label: "others" })}
             >
               Others
@@ -438,20 +444,25 @@ const AddressManager = () => {
             required
           />
           <div className="text-center">
-            <button className="font-bold text-white bg-blue-500 p-2 rounded-md">
+            {/* <button type="button" className="font-bold text-white bg-blue-500 p-2 rounded-md">
               Find location
-            </button>
+            </button> */}
           </div>
           {showAddressForm && (
             <LoadScript googleMapsApiKey="AIzaSyBbE_BV395ODtFKApBX_oK0KselqP0Tjcs">
               <GoogleMap
                 id="map"
                 mapContainerStyle={mapStyles}
-                center={{ lat: newAddress.lat, lng: newAddress.lng }}
-                zoom={16}
-                onLoad={onMapLoad}
+                center={{ lat: newAddress.latitude, lng: newAddress.longitude }}
+                zoom={15}
+                onLoad={onLoad}
                 onIdle={handleMapIdle}
-              />
+                options={{
+                  gestureHandling: "greedy",
+                  fullscreenControl: false,
+                  streetViewControl: false,
+                }}
+              ></GoogleMap>
             </LoadScript>
           )}
 

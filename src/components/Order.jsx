@@ -8,6 +8,7 @@ import axios from "axios";
 import OrderCard from "./orders/OrderCard";
 import Loading from "./Loading";
 import { Link, useParams } from "react-router-dom";
+import { useCartContext } from "../contexts/CartContext";
 
 const orderBtn = [
   {
@@ -24,6 +25,8 @@ const orderBtn = [
 function Order() {
   const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(null);
+
+  const { setActiveOrderCount } = useCartContext();
 
   const { status } = useParams();
 
@@ -45,12 +48,13 @@ function Order() {
             headers: {
               "x-auth-token": process.env.REACT_APP_API_TOKEN,
             },
-          },
+          }
         );
         //  console.log(data);
         if (data.success) {
           setOrders(data.result);
           setLoading(false);
+          setActiveOrderCount(data.result.length);
         } else {
           setLoading(false);
         }

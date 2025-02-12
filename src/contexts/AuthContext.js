@@ -1,6 +1,12 @@
 // src/contexts/AuthContext.js
 import axios from "axios";
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import Cookies from "js-cookie";
 import { api_path_url, authToken } from "../secret";
 
@@ -14,19 +20,55 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [currentAddress, setCurrentAddress] = useState(null);
 
+  // schedule charge
+  const [scheduleChargeList, setScheduleChargeList] = useState(null);
+
+  // fetch schedule charge
+  async function handleScheduleCharge() {
+    try {
+      const { data } = await axios.get(
+        `${api_path_url}/charges/active-schedule`,
+        {
+          headers: {
+            "x-auth-token": authToken,
+          },
+        }
+      );
+
+      //  console.log("schedule charge : ", data);
+      if (data.success) {
+        const charge = {
+          riderFirstKMCharge: data.charges[0].riderFirstKMCharge,
+          riderOthersKMCharge: data.charges[0].riderOthersKMCharge,
+          userFirstKMCharge: data.charges[0].userFirstKMCharge,
+          userOthersKMCharge: data.charges[0].userOthersKMCharge,
+        };
+
+        return charge;
+      } else {
+        return {};
+      }
+    } catch (error) {
+      console.log("schedule charge error: ", error);
+    }
+  }
+
+  useMemo(async () => {
+    const data = await handleScheduleCharge();
+
+    setScheduleChargeList(data);
+  }, [currentAddress]);
+
   // Function to log in the user and store the token in localStorage
   const login = (token) => {
     setCurrentUser({ token });
   };
-
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setCurrentUser(null);
     setUser(null);
   };
-
-
 
   async function getUserProfile() {
     try {
@@ -63,14 +105,13 @@ export const AuthProvider = ({ children }) => {
     if (currentUser) {
       getUserProfile();
     }
-    console.log('current user is : ', currentUser)
+    console.log("current user is : ", currentUser);
   }, [currentUser]);
 
   useEffect(() => {
-
     getUserProfile();
 
-    console.log('current user is : ', currentUser)
+    console.log("current user is : ", currentUser);
   }, []);
 
   const value = {
@@ -81,7 +122,8 @@ export const AuthProvider = ({ children }) => {
     user,
     setUser,
     currentAddress,
-    setCurrentAddress
+    setCurrentAddress,
+    scheduleChargeList,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

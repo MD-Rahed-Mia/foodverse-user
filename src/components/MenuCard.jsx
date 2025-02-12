@@ -8,6 +8,7 @@ import { FaGift } from "react-icons/fa6";
 import { toast } from "react-hot-toast";
 import { api_path_url, authToken } from "../secret";
 import axios from "axios";
+import { PiHamburgerBold } from "react-icons/pi";
 
 export default function MenuCard({ detail }) {
   const [showModal, setShowModal] = useState(false);
@@ -19,12 +20,14 @@ export default function MenuCard({ detail }) {
 
   const [isFavorite, setIsFavorite] = useState(null);
 
-  const { handleAddToFavorite, favoriteMenus, handleRemoveFavorite } = useCartContext();
-
+  const { handleAddToFavorite, favoriteMenus, handleRemoveFavorite } =
+    useCartContext();
 
   //check is loved
   function checkedIsLoved() {
-    const index = favoriteMenus.findIndex((item) => detail._id.toString() === item);
+    const index = favoriteMenus.findIndex(
+      (item) => detail._id.toString() === item
+    );
     if (index !== -1) {
       setIsFavorite(true);
     } else {
@@ -32,12 +35,9 @@ export default function MenuCard({ detail }) {
     }
   }
 
-
   useEffect(() => {
-    checkedIsLoved()
-  }, [favoriteMenus])
-
-
+    checkedIsLoved();
+  }, [favoriteMenus]);
 
   // check delivery charge
   function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -47,20 +47,23 @@ export default function MenuCard({ detail }) {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
-
 
   async function calcdeliveryCharge() {
     const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
 
     if (cood) {
-      const result = calculateDistance(cood.lat, cood.long, detail?.restaurantId.coordinator.lat, detail?.restaurantId.coordinator.long);
-
+      const result = calculateDistance(
+        cood.lat,
+        cood.long,
+        detail?.restaurantId.coordinator.lat,
+        detail?.restaurantId.coordinator.long
+      );
 
       try {
         const { data } = await axios.get(
@@ -72,36 +75,28 @@ export default function MenuCard({ detail }) {
           }
         );
 
-        // console.log(detail.restaurantId.coordinator);
-        //  console.log(data);
-
         const otherKm = result - 1;
 
-        const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
+        const charges =
+          data.charges[0].userOthersKMCharge * otherKm +
+          data.charges[0].userFirstKMCharge;
 
         if (charges < 25) {
           setDeliveryCharge(25);
         } else {
-
           setDeliveryCharge(charges);
         }
 
         // console.log(charges)
-
-
       } catch (error) {
         console.log(error);
       }
     }
-
   }
 
-  useEffect(() => {
-    calcdeliveryCharge()
-  }, [detail])
-
-
-
+  // useEffect(() => {
+  //   calcdeliveryCharge()
+  // }, [detail])
 
   // isopen
   const [isOpen, setIsOpen] = useState(null);
@@ -109,7 +104,6 @@ export default function MenuCard({ detail }) {
   useEffect(() => {
     const is = detail?.restaurantId?.isOpen;
     setIsOpen(is);
-
   }, [detail]);
 
   const [addonList, setAddonList] = useState([]);
@@ -127,7 +121,6 @@ export default function MenuCard({ detail }) {
     console.log(`item remove clicked`);
     handleRemoveFavorite(detail._id);
   }
-
 
   const [price, setPrice] = useState(quantity * detail?.offerPrice);
 
@@ -156,7 +149,11 @@ export default function MenuCard({ detail }) {
         onClick={handleCardClick}
       >
         {/* is open text */}
-        <h1 className={`absolute z-50 text-[13px] top-12 right-2  rounded-full bg-red-500 text-white ${isOpen ? "" : "px-4 "}`}>
+        <h1
+          className={`absolute z-50 text-[13px] top-12 right-2  rounded-full bg-red-500 text-white ${
+            isOpen ? "" : "px-4 "
+          }`}
+        >
           {isOpen ? "" : "closed"}
         </h1>
         <img
@@ -177,13 +174,16 @@ export default function MenuCard({ detail }) {
 
         {/* Favourite */}
         <FaHeart
-          className={`h-8 w-8 cursor-pointer px-2 py-2 rounded-full bg-white ${isFavorite ? "text-red-500" : "text-gray-500"}  absolute right-2 top-2 `}
-          onClick={isFavorite ? handleRemoveFavoriteITems : handleFavouriteItems}
+          className={`h-8 w-8 cursor-pointer px-2 py-2 rounded-full bg-white ${
+            isFavorite ? "text-red-500" : "text-gray-500"
+          }  absolute right-2 top-2 `}
+          onClick={
+            isFavorite ? handleRemoveFavoriteITems : handleFavouriteItems
+          }
         />
         <h3 className="text-sm font-semibold text-gray-800 mx-2 mt-2">
           {detail?.name}
         </h3>
-
 
         {/* <h1 className="text-[12px] pl-2">Delivery charge { deliveryCharge.toFixed() } </h1> */}
         {/*  <div>
@@ -212,7 +212,9 @@ export default function MenuCard({ detail }) {
               />
             </svg>
             <p className="px-2 font-bold text-gray-700">
-              {detail?.averageRating || 4}
+              {detail?.averageRating.length === 1
+                ? detail?.averageRating + ".0"
+                : detail?.averageRating + ".0"}
             </p>
           </div>
         </div>
@@ -226,9 +228,11 @@ export default function MenuCard({ detail }) {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
+        
           <div
-            className={`bg-white p-4 rounded-t-lg w-full transform transition-transform ${showModal ? "translate-y-0" : "translate-y-full"
-              }`}
+            className={`bg-white p-4 rounded-t-lg w-full transform transition-transform ${
+              showModal ? "translate-y-0" : "translate-y-full"
+            }`}
             style={{ transition: "transform 0.3s ease-in-out" }}
           >
             <button
@@ -248,8 +252,8 @@ export default function MenuCard({ detail }) {
                   {detail?.name}
                 </h3>
                 <p className="text-blue-400 font-semibold pl-2 py-2 text-sm"></p>
-                <div className="flex items-center space-x-2 pl-2">
-                  <svg
+                <div className="flex items-center space-x-2 pl-2 text-sm text-gray-400 font-bold">
+                  {/* <svg
                     className="h-5 w-5 text-purple-500"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -265,8 +269,25 @@ export default function MenuCard({ detail }) {
                   </svg>
                   <span className="px-2 font-bold text-gray-700">
                     {detail?.averageRating}
-                  </span>
+                  </span> */}
+                  preparation in {detail.preparationTime} minutes
                 </div>
+                <span>
+                  {detail.isVeg ? (
+                    <span className="flex items-center gap-2">
+                      <PiHamburgerBold />
+                      veg
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <PiHamburgerBold />
+                      non-veg
+                    </span>
+                  )}
+                </span>
+                <h1 className="mx-1 text-sm font-bold text-gray-400 mt-1">
+                  {/* {detail && detail.restaurantId.name} */}
+                </h1>
               </div>
             </div>
             <p className="font-semibold text-sm mt-2">Description</p>
@@ -274,7 +295,6 @@ export default function MenuCard({ detail }) {
             <div className="flex items-center justify-between mt-4 border-t-2 pt-2 ">
               <p className="font-semibold mt-2">Total Amount:</p>
               <p className="text-gray-800 font-bold">TK {price + addonValue}</p>
-
             </div>
 
             {/* addons */}

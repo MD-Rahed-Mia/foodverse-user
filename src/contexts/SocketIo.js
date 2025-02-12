@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 
 // Set your Socket.IO server URL here
-const SOCKET_URL = process.env.REACT_APP_SOCKET_SERVER;
+const SOCKET_URL = "https://api.foodversedelivery.com";
 // Create a Socket Context
 const SocketContext = createContext(null);
 
@@ -19,10 +19,9 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize socket connection
-    const socketInstance = io(SOCKET_URL, {
-      // Add any options here (e.g., authentication, transport settings, etc.)
-      transports: ["websocket"], // Force WebSocket transport
-    });
+
+    console.log(JSON.parse(localStorage.getItem("user")));
+    const socketInstance = io(SOCKET_URL, {});
 
     // On connection established
     socketInstance.on("connect", () => {
@@ -34,13 +33,13 @@ export const SocketProvider = ({ children }) => {
       console.log("Disconnected from server");
     });
 
-    socketInstance.on('connect_error', (err) => {
+    socketInstance.on("connect_error", (err) => {
       console.log(err.message);
       // some additional description, for example the status code of the initial HTTP response
-  console.log(err.description);
+      console.log(err.description);
 
-  // some additional context, for example the XMLHttpRequest object
-  console.log(err.context);
+      // some additional context, for example the XMLHttpRequest object
+      console.log(err.context);
     });
 
     // Set the socket instance
@@ -53,8 +52,6 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={socket}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 };

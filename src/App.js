@@ -57,6 +57,9 @@ import SetupAddress from "./pages/SetupAddress.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import DeleteAccount from "./pages/DeleteAccount.jsx";
 import OtpVerifyPage from "./pages/OtpVerifyPage.jsx";
+import ForgetPassword from "./components/ForgetPassword.jsx";
+import VerifyForgetPassword from "./components/otp/VerifyForgetPassword.jsx";
+import NewPasswordUpdate from "./components/NewPasswordUpdate.jsx";
 
 function App() {
   const socket = useSocket();
@@ -70,7 +73,7 @@ function App() {
       socket.emit("auth", id);
       console.log(socket);
     } else {
-      console.log('no socket found.')
+      console.log("no socket found.");
     }
   }, [socket]);
 
@@ -78,7 +81,6 @@ function App() {
     <AuthProvider>
       <ToastContainer position="top-right" theme="dark" />
       <Toaster />
-
 
       <Helmet>
         <title>Foodverse Delivery - Fresh and Fast Food Delivery Service</title>
@@ -120,12 +122,8 @@ function App() {
       </Helmet>
 
       <CartProvider>
-
-
         <Router>
-
           <FloatingAddressList isActive={isActive} setIsActive={setIsActive} />
-
 
           <div className="App">
             {/* message toast */}
@@ -151,7 +149,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/home"
                 element={
@@ -170,7 +167,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/list-restaurant"
                 element={
@@ -181,7 +177,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/cuisine/:cuisine"
                 element={
@@ -191,17 +186,16 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/category/:category"
                 element={
                   <>
-                    <Header title="category" /> <PrivateRoute element={CategoryFilter} />
+                    <Header title="category" />{" "}
+                    <PrivateRoute element={CategoryFilter} />
                     <Footer />
                   </>
                 }
               />
-
               <Route
                 path="/category"
                 element={
@@ -221,7 +215,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/live-chat/:userId/:orderId"
                 element={
@@ -230,7 +223,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/live-chat-rider/:userId/:orderId"
                 element={
@@ -247,7 +239,6 @@ function App() {
                   </>
                 }
               />
-
               <Route
                 path="/order/:status"
                 element={
@@ -290,92 +281,104 @@ function App() {
                 path="/checkout"
                 element={<PrivateRoute element={Checkout} />}
               />
-
               <Route
                 path="/notification/:type"
                 element={<PrivateRoute element={Notification} />}
               />
-
               <Route
                 path="/setaddressmanager"
                 element={<PrivateRoute element={SetAddressManager} />}
               />
-
-
               {/* policy page */}
-              <Route path="/privacy-policy" element={
-                <>
-                  <PrivateRoute element={PrivacyPolicy} />
-
-                </>
-              } />
-
-              <Route path="/refund-policy" element={
-                <>
-                  <PrivateRoute element={RefundPolicy} />
-
-                </>
-              } />
-              <Route path="/cancalletion-policy" element={
-                <>
-                  <PrivateRoute element={CancellationPolicy} />
-
-                </>
-              } />
-              <Route path="/shipping-policy" element={
-                <>
-                  <PrivateRoute element={ShippingPolicy} />
-
-                </>
-              } />
-
-
-              <Route path="/help-and-support" element={
-                <>
-                  <PrivateRoute element={HelpAndSupport} />
-
-                </>
-              } />
-
-              <Route path="/setup-address" element={
-                <>
-                  <PrivateRoute element={SetupAddress} />
-                  <Footer />
-                </>
-              } />
-
-              <Route path="/change-password" element={
-                <>
-                  <PrivateRoute element={ChangePassword} />
-                  <Footer />
-                </>
-              } />
-
-              <Route path="/signup" element={
-                <>
-                  <SignUp />
-                </>
-
-              } />
-
-              <Route path="/otp" element={
-                <>
-                  <OtpVerifyPage />
-                </>
-
-              } />
-
-
-              <Route path="/delete-account" element={
-                <>
-                  <PrivateRoute element={DeleteAccount} />
-                  <Footer />
-                </>
-
-              } />
-
-
-
+              <Route
+                path="/privacy-policy"
+                element={
+                  <>
+                    <PrivateRoute element={PrivacyPolicy} />
+                  </>
+                }
+              />
+              <Route
+                path="/refund-policy"
+                element={
+                  <>
+                    <PrivateRoute element={RefundPolicy} />
+                  </>
+                }
+              />
+              <Route
+                path="/cancalletion-policy"
+                element={
+                  <>
+                    <PrivateRoute element={CancellationPolicy} />
+                  </>
+                }
+              />
+              <Route
+                path="/shipping-policy"
+                element={
+                  <>
+                    <PrivateRoute element={ShippingPolicy} />
+                  </>
+                }
+              />
+              <Route
+                path="/help-and-support"
+                element={
+                  <>
+                    <PrivateRoute element={HelpAndSupport} />
+                  </>
+                }
+              />
+              <Route
+                path="/setup-address"
+                element={
+                  <>
+                    <PrivateRoute element={SetupAddress} />
+                    <Footer />
+                  </>
+                }
+              />
+              <Route
+                path="/change-password"
+                element={
+                  <>
+                    <PrivateRoute element={ChangePassword} />
+                    <Footer />
+                  </>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <>
+                    <SignUp />
+                  </>
+                }
+              />
+              <Route
+                path="/otp"
+                element={
+                  <>
+                    <OtpVerifyPage />
+                  </>
+                }
+              />
+              <Route
+                path="/delete-account"
+                element={
+                  <>
+                    <PrivateRoute element={DeleteAccount} />
+                    <Footer />
+                  </>
+                }
+              />
+              <Route path="/forget-password" element={<ForgetPassword />} />
+              <Route
+                path="/forget-password/verify-otp"
+                element={<VerifyForgetPassword />}
+              />{" "}
+              <Route path="/update-password" element={<NewPasswordUpdate />} />
             </Routes>
           </div>
         </Router>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { HiOutlineStar } from "react-icons/hi";
 import { DateTime } from "luxon";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { FaMotorcycle } from "react-icons/fa6";
 import { useAuth } from "../../contexts/AuthContext";
 import { FaRegStar } from "react-icons/fa6";
+import calculateDeliveryCharge from "../../helpers/calculateDeliveryCharge";
 
 function RestaurantCard({ detail }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,66 +17,36 @@ function RestaurantCard({ detail }) {
 
   const [deliveryCharge, setDeliveryCharge] = useState(0);
 
-  const { currentAddress } = useAuth();
+  const { currentAddress, scheduleChargeList } = useAuth();
 
-  // check delivery charge
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth's radius in km
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
+  // calculate delivery charge
 
+  useMemo(() => {
+    if (currentAddress && scheduleChargeList) {
+      // calculateDeliveryCharge()
 
-  async function calcdeliveryCharge() {
-    const cood = JSON.parse(localStorage.getItem("locationCoordinators"));
-    if (cood) {
-      const result = calculateDistance(currentAddress.latitude, currentAddress.longitude, detail?.coordinator.lat, detail?.coordinator.long);
-      try {
-        const { data } = await axios.get(
-          `${api_path_url}/charges/active-schedule`,
-          {
-            headers: {
-              "x-auth-token": authToken,
-            },
-          }
-        );
+      const userAddress = {
+        userLat: currentAddress.latitude,
+        userLong: currentAddress.longitude,
+      };
+      const restaurantAddress = {
+        restaurantLat: detail.coordinator.lat,
+        restaurantLong: detail.coordinator.long,
+      };
 
+      const charge = calculateDeliveryCharge(
+        userAddress.userLat,
+        userAddress.userLong,
+        Number(restaurantAddress.restaurantLat),
+        Number(restaurantAddress.restaurantLong),
+        scheduleChargeList
+      );
 
-
-        const otherKm = result - 1;
-
-        const charges = data.charges[0].userOthersKMCharge * otherKm + data.charges[0].userFirstKMCharge;
-
-        if (charges < 25) {
-          setDeliveryCharge(25);
-        } else {
-
-          setDeliveryCharge(charges);
-        }
-
-        // console.log(charges)
-
-
-      } catch (error) {
-        console.log(error);
+      if (charge) {
+        setDeliveryCharge(charge.toFixed());
       }
     }
-
-  }
-
-  useEffect(() => {
-    calcdeliveryCharge()
-  }, [detail])
-
-
+  }, [detail]);
 
   useEffect(() => {
     if (detail) {
@@ -127,8 +98,9 @@ function RestaurantCard({ detail }) {
 
   return (
     <div
-      className={`w-full min-w-60 border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${isOpen ? "cursor-pointer" : "cursor-not-allowed"
-        }`}
+      className={`w-full min-w-60 border-2 shadow-md cursor-pointer rounded-md p-2 bg-blue-50 relative ${
+        isOpen ? "cursor-pointer" : "cursor-not-allowed"
+      }`}
     >
       <Link to={`/list-restaurant/${detail._id}&is_open=${isOpen}`}>
         <img
@@ -145,24 +117,27 @@ function RestaurantCard({ detail }) {
           />
         </div>
         <div className="py-2  ">
-          <h1 className="font-bold text-xl text-gray-700 pl-24 mb-2 sm:pl-0 sm:mb-0">
+          <h1 className="font-bold whitespace-nowrap text-gray-700 pl-24 mb-2 sm:pl-0 sm:mb-0">
             {detail.name}
           </h1>
 
           <div className="flex items-center text-[14px] justify-between px-2">
-            <h1 className="text-sm font-semibold text-gray-700 pt-2">
+            <h1 className="text-[12px] font-semibold text-gray-700 pt-2">
               {detail.address}
             </h1>
           </div>
 
           <div className="w-full flex  items-center justify-between">
-            <h1 className="font-semibold  flex items-center gap-2 text-gray-600 pl-2 text-[13px]"><FaMotorcycle /> {deliveryCharge.toFixed()} Delivery Fee</h1>
-
+            <h1 className="font-semibold  flex items-center gap-2 text-gray-600 pl-2 text-[13px]">
+              <FaMotorcycle /> {deliveryCharge} TK delivery fee
+            </h1>
 
             <div className="flex items-center justify-between pt-2">
               <HiOutlineStar className="size-5 text-purple-500" />
               <p className="px-2 font-bold text-gray-700">
-                {detail.averageReview % 1 === 0 ? `${detail.averageReview}.0` : detail.averageReview}
+                {detail.averageReview % 1 === 0
+                  ? `${detail.averageReview}.0`
+                  : detail.averageReview}
               </p>
             </div>
           </div>

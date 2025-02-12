@@ -5,11 +5,12 @@ import { Link } from "react-router-dom";
 import Loading from "../Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategory } from "../../features/slices/CategorySlices";
+import CategoryPreLoader from "./CategoryPreLoader";
 
 export default function CategorySection() {
   const [category, setCategory] = useState(null);
 
-  const { value, loading, } = useSelector((state) => state.category);
+  const { value, loading } = useSelector((state) => state.category);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,10 +24,10 @@ export default function CategorySection() {
     <div className="w-full flex items-center justify-center">
       {loading ? (
         <div>
-          <Loading />
+          <CategoryPreLoader />
         </div>
       ) : (
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-6 lg:grid-cols-8 gap-2">
+        <div className="grid grid-cols-4 w-full">
           {value?.map((ctg, index) => {
             if (!ctg.isPopular) {
               return false;

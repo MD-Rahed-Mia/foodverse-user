@@ -76,9 +76,8 @@ const RestaurantPage = () => {
                 {restaurant?.name}
               </h1>
               <p className="text-sm text-gray-500">
-                0.2km away |{" "}
-                <span className="text-gray-800 font-medium">Free delivery</span>{" "}
-                | Tk 500 Minimum
+                {restaurant && restaurant.address}
+                
               </p>
             </div>
           </div>
@@ -104,7 +103,7 @@ const RestaurantPage = () => {
                 />
               </svg>
               <span className="text-lg font-semibold text-gray-800">
-                {restaurant?.averageReview}
+                {restaurant?.averageReview.length === 1 ? restaurant?.averageReview: restaurant?.averageReview  + ".0"}
               </span>
               <Link
                 to={`/rating/${restaurant?._id}`}
