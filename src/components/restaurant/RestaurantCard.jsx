@@ -30,8 +30,8 @@ function RestaurantCard({ detail }) {
         userLong: currentAddress.longitude,
       };
       const restaurantAddress = {
-        restaurantLat: detail.coordinator.lat,
-        restaurantLong: detail.coordinator.long,
+        restaurantLat: detail.restaurantCoordinator.latitude,
+        restaurantLong: detail.restaurantCoordinator.longitude,
       };
 
       const charge = calculateDeliveryCharge(
