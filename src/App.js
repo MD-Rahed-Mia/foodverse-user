@@ -60,6 +60,7 @@ import OtpVerifyPage from "./pages/OtpVerifyPage.jsx";
 import ForgetPassword from "./components/ForgetPassword.jsx";
 import VerifyForgetPassword from "./components/otp/VerifyForgetPassword.jsx";
 import NewPasswordUpdate from "./components/NewPasswordUpdate.jsx";
+import PaymentStatus from "./pages/PaymentSuccess.jsx";
 
 function App() {
   const socket = useSocket();
@@ -379,6 +380,7 @@ function App() {
                 element={<VerifyForgetPassword />}
               />{" "}
               <Route path="/update-password" element={<NewPasswordUpdate />} />
+              <Route path="/payment-status" element={<PaymentStatus />} />
             </Routes>
           </div>
         </Router>
