@@ -61,6 +61,7 @@ import ForgetPassword from "./components/ForgetPassword.jsx";
 import VerifyForgetPassword from "./components/otp/VerifyForgetPassword.jsx";
 import NewPasswordUpdate from "./components/NewPasswordUpdate.jsx";
 import PaymentStatus from "./pages/PaymentSuccess.jsx";
+import TermsCondition from "./pages/TermsCondition.jsx";
 
 function App() {
   const socket = useSocket();
@@ -291,46 +292,14 @@ function App() {
                 element={<PrivateRoute element={SetAddressManager} />}
               />
               {/* policy page */}
-              <Route
-                path="/privacy-policy"
-                element={
-                  <>
-                    <PrivateRoute element={PrivacyPolicy} />
-                  </>
-                }
-              />
-              <Route
-                path="/refund-policy"
-                element={
-                  <>
-                    <PrivateRoute element={RefundPolicy} />
-                  </>
-                }
-              />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route
                 path="/cancalletion-policy"
-                element={
-                  <>
-                    <PrivateRoute element={CancellationPolicy} />
-                  </>
-                }
+                element={<CancellationPolicy />}
               />
-              <Route
-                path="/shipping-policy"
-                element={
-                  <>
-                    <PrivateRoute element={ShippingPolicy} />
-                  </>
-                }
-              />
-              <Route
-                path="/help-and-support"
-                element={
-                  <>
-                    <PrivateRoute element={HelpAndSupport} />
-                  </>
-                }
-              />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/help-and-support" element={<HelpAndSupport />} />
               <Route
                 path="/setup-address"
                 element={
@@ -381,6 +350,7 @@ function App() {
               />{" "}
               <Route path="/update-password" element={<NewPasswordUpdate />} />
               <Route path="/payment-status" element={<PaymentStatus />} />
+              <Route path="/terms-conditions" element={<TermsCondition />} />
             </Routes>
           </div>
         </Router>
